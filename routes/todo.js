@@ -1,9 +1,5 @@
-var express = require('express');
-var router = express.Router();
-var ToDo = require('../modules/ToDo');
-
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/neverresting');
+var router = require('express').Router();
+var ToDo = require('./ToDo');
 
 /* POST request that creates a new todo */
 router.post('/todo', (req, res) => {
