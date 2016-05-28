@@ -6,7 +6,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ToDo = new Schema({
-    name: { type: String}
+    name: { type: String },
+    added: { type: Date, default: Date.now() }
 });
 
 module.exports = mongoose.model('ToDo', ToDo);
