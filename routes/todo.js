@@ -1,5 +1,5 @@
 var router = require('express').Router();
-var ToDo = require('./ToDo');
+var ToDo = require('../app/models/ToDo');
 
 /* POST request that creates a new todo */
 router.post('/todo', (req, res) => {
@@ -7,30 +7,30 @@ router.post('/todo', (req, res) => {
     ({name} = req.body);
 
     // Create the new instance with the data
-    var instance = new ToDo();
+    const instance = new ToDo();
     instance.name = name;
 
     // Save the new todo
-    instance.save((err) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        } else {
-            res.status(201).send(instance);
-        }
+    const promise = instance.save();
+
+    promise.then(todo => {
+        res.status(201).send(todo);
+    }).catch(error => {
+        res.status(500).send(error);
     });
 });
 
 /* GETs all the todos */
 router.get('/todos', (req, res) => {
-    ToDo.find({}, (err, todos) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        } else {
-            res.status(200).send(todos);
-        }
+
+    const promise = ToDo.find({}).exec();
+
+    promise.then(todos => {
+        res.status(200).send(todos);
+    }).catch(error => {
+        res.status(500).send(error);
     });
+
 });
 
 module.exports = router;
