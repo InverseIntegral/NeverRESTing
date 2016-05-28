@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
@@ -28,12 +29,21 @@ const listen = () => {
 };
 
 /**
- * Connects to the mongod with the given configuration parameters.
- * @returns {MongooseThenable} a monngoose abstraction
+ * Connects to the mongodb with the given configuration parameters.
+ * @returns the mongoose connection
  */
 const connect = () => {
-    var options = {server: {socketOptions: {keepAlive: 1}}};
-    return mongoose.connect('mongodb://localhost/neverresting', options).connection;
+    var options = {
+        server: {
+            socketOptions: {
+                keepAlive: 1 // Keep the connection alive
+            }
+        },
+        user: process.env.MONGODB_USERNAME,
+        pass: process.env.MONGODB_PASSWORD
+    };
+
+    return mongoose.connect('mongodb://' + process.env.MONGODB_HOST + ":" + process.env.MONGODB_PORT +  '/' + process.env.MONGODB_DATABASE, options).connection;
 };
 
 connect()
