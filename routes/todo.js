@@ -1,6 +1,13 @@
-var router = require('express').Router();
-var ToDo = require('../app/models/ToDo');
+const router = require('express').Router();
+const ToDo = require('../app/models/ToDo');
 
+/**
+ * Handles a mongoose promise by using the ResponseHandler
+ * abstraction to return a response.
+ *
+ * @param promise   The mongoose promise for this operation.
+ * @param response  The express js response object.
+ */
 const handlePromise = (promise, response) => {
     let ResponseHandler = require('../app/responseHandler');
     const handler = new ResponseHandler(response);
@@ -10,6 +17,14 @@ const handlePromise = (promise, response) => {
         .catch(error => handler.handleFailure(error));
 };
 
+/**
+ * Simple validation (undefined and null check) of all
+ * supplied parameters.
+ *
+ * @param check         The values that should be checked.
+ * @returns {boolean}   Returns false if any value is not defined or null.
+ *                      And returns true if all of them are defined and not null.
+ */
 const validate = (...check) => {
     for (let value of check) {
         if (value == null) {
