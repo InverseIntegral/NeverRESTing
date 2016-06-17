@@ -9,10 +9,11 @@ let responseKey = Symbol();
  * This class handles responses by using the
  * express js response object.
  */
-class ResponseHandler {
+class DefaultResponseHandler {
 
     constructor(response) {
-        this[responseKey] = response;
+        this.responseKey = responseKey;
+        this[this.responseKey] = response;
     }
 
     /**
@@ -21,7 +22,7 @@ class ResponseHandler {
      * @param result    The resulting object.
      */
     handleSuccess(result) {
-        this[responseKey]
+        this[this.responseKey]
             .status(200)
             .send(result);
     }
@@ -32,11 +33,11 @@ class ResponseHandler {
      * @param error     The sever error object.
      */
     handleFailure(error) {
-        this[responseKey]
+        this[this.responseKey]
             .status(500)
             .send(error);
     }
 
 }
 
-module.exports = ResponseHandler;
+module.exports = DefaultResponseHandler;
