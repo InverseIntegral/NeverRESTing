@@ -2,14 +2,15 @@ const router = require('express').Router();
 const ToDo = require('../app/models/ToDo');
 
 const DefaultResponseHandler = require('../app/handlers/DefaultResponseHandler');
-const CreationResponseHandler = require('../app/handlers/CreationResponseHandler');
+const NoContentResponseHandler = require('../app/handlers/NoContentResponseHandler');
 
 /**
  * Handles a mongoose promise by using the ResponseHandler
  * abstraction to return a response.
  *
- * @param promise   The mongoose promise for this operation.
- * @param response  The express js response object.
+ * @param promise       The mongoose promise for this operation.
+ * @param response      The express js response object.
+ * @param handlerClass  The class that knows how to handle the supplied promise.
  */
 const handlePromise = (promise, response, handlerClass) => {
     const handler = new handlerClass(response);
@@ -53,7 +54,7 @@ router.post('/todo', (req, res) => {
 
     // Save the new todo
     const promise = instance.save();
-    handlePromise(promise, res, CreationResponseHandler);
+    handlePromise(promise, res, NoContentResponseHandler);
 });
 
 /* GETs all the todos */
@@ -70,7 +71,7 @@ router.get('/todo/:id', (req, res) => {
 
 router.delete('/todo/:id', (req, res) => {
     const promise = ToDo.findOne({_id: req.params.id}).remove().exec();
-    handlePromise(promise, res, DefaultResponseHandler);
+    handlePromise(promise, res, NoContentResponseHandler);
 });
 
 module.exports = router;
