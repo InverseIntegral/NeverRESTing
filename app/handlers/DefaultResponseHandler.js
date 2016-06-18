@@ -2,17 +2,15 @@
  * Created by Inverse Integral on 28.05.2016.
  */
 
-// Key for the response property.
-let responseKey = Symbol();
-
 /**
  * This class handles responses by using the
  * express js response object.
+ * This default implementation can be overridden.
  */
 class DefaultResponseHandler {
 
     constructor(response) {
-        this.responseKey = responseKey;
+        this.responseKey = Symbol();
         this[this.responseKey] = response;
     }
 
