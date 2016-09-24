@@ -39,7 +39,7 @@ const validate = (...check) => {
 };
 
 /* POST request that creates a new todo */
-router.post('/todo', (req, res) => {
+router.post('/todos', (req, res) => {
     // Destructuring the request body
     const {name} = req.body;
 
@@ -64,12 +64,12 @@ router.get('/todos', (req, res) => {
 });
 
 /* GETs a specific todo by its id */
-router.get('/todo/:id', (req, res) => {
+router.get('/todos/:id', (req, res) => {
     const promise = ToDo.findOne({_id: req.params.id}).exec();
     handlePromise(promise, res, DefaultResponseHandler);
 });
 
-router.delete('/todo/:id', (req, res) => {
+router.delete('/todos/:id', (req, res) => {
     const promise = ToDo.findOne({_id: req.params.id}).remove().exec();
     handlePromise(promise, res, NoContentResponseHandler);
 });
