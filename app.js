@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
@@ -12,12 +13,12 @@ const app = express();
 /* Custom routers */
 const todoRoutes = require('./routes/todo');
 
-app.use(logger('dev'));
+app.use(logger('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('/', todoRoutes);
 
 /**
