@@ -34,7 +34,7 @@ class ToDoList extends React.Component{
             <table>
                 <tbody>
                     <tr>
-                        <th>Test</th>
+                        <th>ToDos</th>
                     </tr>
                     {todos}
                 </tbody>

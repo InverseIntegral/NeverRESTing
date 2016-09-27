@@ -1,8 +1,29 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-a {
-  color: #00B7FF;
+table {
+    border-spacing: 7px;
+}
+
+th {
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+
+td {
+    font-size: 20px;
+    padding: 5px 40px;
+    background-color: rgba(242, 242, 242, 0.67);
+    border: 1px solid rgba(198, 198, 198, 0.67);
+    text-align: center;
+}
+
+td:hover {
+    background-color: rgba(234, 234, 234, 0.67);
 }
