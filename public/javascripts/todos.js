@@ -24,10 +24,22 @@ class App extends React.Component {
 }
 
 class ToDoList extends React.Component{
+
+    onDelete(id) {
+        console.log(id);
+        rest({
+            path: '/todos/' + id,
+            method: 'DELETE'
+        }).then(response => {
+            console.log('deleted');
+        });
+
+    }
+
     render() {
 
         var todos = this.props.todos.map(todo =>
-            <ToDo key={todo._id} todo={todo}/>
+            <ToDo key={todo._id} todo={todo} onDelete={this.onDelete}/>
         );
 
         return (
@@ -44,9 +56,10 @@ class ToDoList extends React.Component{
 }
 
 class ToDo extends React.Component{
+
     render() {
         return (
-            <tr>
+            <tr onClick={this.props.onDelete.bind(this.props.todo._id)}>
                 <td>{this.props.todo.name}</td>
             </tr>
         )
