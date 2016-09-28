@@ -54,7 +54,7 @@ router.post('/todos', (req, res) => {
 
     // Save the new todo
     const promise = instance.save();
-    handlePromise(promise, res, NoContentResponseHandler);
+    handlePromise(promise, res, DefaultResponseHandler);
 });
 
 /* GETs all the todos */

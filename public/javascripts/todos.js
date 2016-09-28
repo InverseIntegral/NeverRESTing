@@ -1,72 +1,113 @@
 import rest from 'rest';
+import mime from 'rest/interceptor/mime';
 
-class App extends React.Component {
+var client = rest.wrap(mime);
 
+const Title = ({todoCount}) => {
+    return (
+        <div>
+            <div>
+                <h1>To-Dos({todoCount})</h1>
+            </div>
+        </div>
+    );
+};
+
+const TodoForm = ({addTodo}) => {
+    let input;
+
+    return (
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            addTodo(input.value);
+            input.value = '';
+        }}>
+            <input className="form-control col-md-12" ref={node => {
+                input = node;
+            }}/>
+            <br />
+        </form>
+    );
+};
+
+const Todo = ({todo, remove}) => {
+    return (<a href="#" className="list-group-item" onClick={() => {
+        remove(todo._id)
+    }}>{todo.name}</a>);
+};
+
+const TodoList = ({todos, remove}) => {
+    const todoNode = todos.map((todo) => {
+        return (<Todo todo={todo} key={todo._id} remove={remove}/>)
+    });
+
+    return (<div className="list-group" style={{marginTop: '30px'}}>{todoNode}</div>);
+};
+
+class TodoApp extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            todos: []
+            data: []
         };
+        this.apiUrl = 'http://localhost:3000/todos'
     }
 
     componentDidMount() {
-        rest('/todos').then(response => {
-            this.setState({todos: JSON.parse(response.entity)});
+        client(this.apiUrl)
+            .then((response) => {
+
+                this.setState({
+                    data: response.entity
+                });
+            });
+    }
+
+    addTodo(val) {
+        client({
+            path: this.apiUrl,
+            method: 'POST',
+            entity: {
+                name: val
+            },
+            headers: {"Content-Type": "application/json"}
+        }).then((response) => {
+            this.state.data.push(response.entity);
+            this.setState({data: this.state.data});
         });
     }
 
-    render() {
-        return (
-            <ToDoList todos={this.state.todos}></ToDoList>
-        )
-    }
-}
+    handleRemove(id) {
 
-class ToDoList extends React.Component{
+        const remainder = this.state.data.filter((todo) => {
+            if (todo._id !== id) return todo;
+        });
 
-    onDelete(id) {
-        console.log(id);
-        rest({
-            path: '/todos/' + id,
+        client({
+            path: this.apiUrl + '/' + id,
             method: 'DELETE'
-        }).then(response => {
-            console.log('deleted');
+        }).then(() => {
+            this.setState({data: remainder});
         });
-
     }
 
     render() {
 
-        var todos = this.props.todos.map(todo =>
-            <ToDo key={todo._id} todo={todo} onDelete={this.onDelete}/>
+        return (
+            <div>
+                <Title todoCount={this.state.data.length}/>
+                <TodoForm addTodo={this.addTodo.bind(this)}/>
+                <TodoList
+                    todos={this.state.data}
+                    remove={this.handleRemove.bind(this)}
+                />
+            </div>
         );
-
-        return (
-            <table>
-                <tbody>
-                    <tr>
-                        <th>ToDos</th>
-                    </tr>
-                    {todos}
-                </tbody>
-            </table>
-        )
-    }
-}
-
-class ToDo extends React.Component{
-
-    render() {
-        return (
-            <tr onClick={this.props.onDelete.bind(this.props.todo._id)}>
-                <td>{this.props.todo.name}</td>
-            </tr>
-        )
     }
 }
 
 ReactDOM.render(
-    <App/>,
+    <TodoApp/>,
     document.getElementById('content')
 );
