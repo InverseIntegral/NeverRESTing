@@ -3,7 +3,7 @@ var path = require('path');
 module.exports = {
 
     // The entry of this application
-    entry: './public/javascripts/todos.js',
+    entry: './public/javascripts/index.js',
 
     // The output should go to /build/bundle.js
     output: {
@@ -13,9 +13,6 @@ module.exports = {
 
     module: {
 
-        // Don't parse this js file as it throws errors
-        noParse: [/node_modules\/json-schema\/lib\/validate\.js/],
-
         loaders: [
 
             /* JavaScript loader */
@@ -24,13 +21,7 @@ module.exports = {
                 include: [
                     path.resolve(__dirname, "public/javascripts")
                 ],
-                loaders: ['react-hot', 'babel-loader']
-            },
-
-            /* JSON loader */
-            {
-                test: /\.json$/,
-                loaders: ['json-loader']
+                loaders: ['babel']
             }
 
         ]
