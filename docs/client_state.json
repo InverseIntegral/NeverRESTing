@@ -2,13 +2,13 @@
   "isFetching": true,
   "todos": [
     {
-      "id": "57f0bcce71c6300a14f11996",
-      "name": "Kochen",
+      "_id": "57f0bcce71c6300a14f11996",
+      "text": "Kochen",
       "added": "2016-10-02T07:52:45.731Z"
     },
     {
-      "id": "57f0bcce71c6300a14f11997",
-      "name": "Lernen",
+      "_id": "57f0bcce71c6300a14f11997",
+      "text": "Lernen",
       "added": "2016-10-02T07:52:45.731Z"
     }
   ]
