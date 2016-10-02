@@ -1,11 +1,9 @@
-import React, { PropTypes } from 'react'
+import React, {PropTypes} from 'react'
 
-const Todo = ({ onClick, text }) => (
-        <li
-                onClick={onClick}
-        >
-            {text}
-        </li>
+const Todo = ({onClick, text}) => (
+    <li onClick={onClick}>
+        {text}
+    </li>
 );
 
 Todo.propTypes = {
