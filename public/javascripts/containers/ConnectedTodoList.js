@@ -1,17 +1,17 @@
 import {connect} from 'react-redux'
 import TodoList from '../components/TodoList'
-import {removeTodo} from '../actions';
+import {deleteTodo} from '../actions';
 
 const mapStateToProps = (state) => {
     return {
-        todos: state
+        todos: state.todos
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onTodoClick: (id) => {
-            dispatch(removeTodo(id))
+            dispatch(deleteTodo(id))
         }
     }
 };
