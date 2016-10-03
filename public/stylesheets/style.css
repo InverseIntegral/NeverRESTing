@@ -1,30 +1,77 @@
+html, body {
+    height: 100%;
+    padding: 20px;
+    font-size: 1.4em;
+    font-family: Tahoma, Geneva, sans-serif;
+}
+
 body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    width: 20%;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0;
 }
 
-table {
-    border-spacing: 8px;
+#root {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-th {
-    font-size: 25px;
-    font-weight: bold;
-    letter-spacing: 4px;
-    border-bottom: 1px solid black;
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
-td {
-    font-size: 20px;
-    padding: 5px 40px;
-    background-color: rgba(242, 242, 242, 0.67);
-    border: 1px solid rgba(198, 198, 198, 0.67);
+li {
+    background-color: rgba(224, 224, 224, 0.24);
     text-align: center;
+    padding: 10px;
+    margin-bottom: 3px;
 }
 
-td:hover {
-    background-color: rgba(234, 234, 234, 0.67);
+li:hover {
+    background-color: rgba(224, 224, 224, 0.39);
+}
+
+button {
+    background-color: rgba(34, 206, 59, 0.49);
+    border: none;
+    color: black;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    outline: none;
+
+    padding: 6px 12px;
+    font-size: 16px;
+    margin: 4px 2px;
+}
+
+input {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+
+    outline: none;
+    padding: 6px 0 6px 6px;
+    margin: 5px 1px 3px 0;
+    border: 1px solid #DDDDDD;
+}
+
+input:focus {
+    margin: 5px 1px 3px 0;
+    border: 1px solid rgba(34, 206, 59, 0.49);
+}
+
+li .fade {
+    opacity: 0;
+    -webkit-transition: opacity 0.5s ease-in;
+    -moz-transition: opacity 0.5s ease-in;
+    -ms-transition: opacity 0.5s ease-in;
+    -o-transition: opacity 0.5s ease-in;
+    transition: opacity 0.5s ease-in;
 }
