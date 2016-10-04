@@ -18,18 +18,20 @@ let AddTodo = ({dispatch}) => {
                 input.value = ''
             }}>
                 <table>
-                    <tr>
-                        <td>
-                            <input ref={node => {
-                                input = node
-                            }}/>
-                        </td>
-                        <td>
-                            <button type="submit">
-                                Add Todo
-                            </button>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input ref={node => {
+                                    input = node
+                                }}/>
+                            </td>
+                            <td>
+                                <button type="submit">
+                                    Add Todo
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </form>
         </div>
