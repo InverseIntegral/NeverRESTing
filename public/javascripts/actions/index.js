@@ -1,6 +1,8 @@
 import rest from 'rest';
 import mime from 'rest/interceptor/mime';
-var client = rest.wrap(mime);
+
+const client = rest.wrap(mime);
+const API_URI = 'http://localhost:3000/todos';
 
 export const receiveTodo = (json) => {
     return {
@@ -33,19 +35,17 @@ export function fetchTodos() {
     return (dispatch) => {
         dispatch(requestTodos());
 
-        return client('http://localhost:3000/todos')
+        return client(API_URI)
             .then(response => {
-                dispatch(receiveTodos(response.entity))
+                dispatch(receiveTodos(response.entity));
             });
     };
 }
 
 export function addTodo(text) {
     return (dispatch) => {
-        dispatch(requestTodos());
-
         return client({
-            'path': 'http://localhost:3000/todos',
+            'path': API_URI,
             'headers': {
                 'Content-Type': 'application/json'
             },
@@ -53,20 +53,18 @@ export function addTodo(text) {
                 text
             }
         }).then(response => {
-            dispatch(receiveTodo(response.entity))
+            dispatch(receiveTodo(response.entity));
         });
     }
 }
 
 export function deleteTodo(id) {
     return (dispatch) => {
-        dispatch(requestTodos());
-
         return client({
-            'path': 'http://localhost:3000/todos/' + id,
+            'path': API_URI + '/' + id,
             'method': 'DELETE'
         }).then(() => {
-            dispatch(removeTodo(id))
+            dispatch(removeTodo(id));
         });
     }
 }
