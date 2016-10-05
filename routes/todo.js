@@ -41,16 +41,16 @@ const validate = (...check) => {
 /* POST request that creates a new todo */
 router.post('/todos', (req, res) => {
     // Destructuring the request body
-    const {name} = req.body;
+    const {text} = req.body;
 
-    if (!validate(name)) {
+    if (!validate(text)) {
         res.status(400).json('Invalid request');
         return;
     }
 
     // Create the new instance with the data
     const instance = new ToDo();
-    instance.name = name;
+    instance.text = text;
 
     // Save the new todo
     const promise = instance.save();
