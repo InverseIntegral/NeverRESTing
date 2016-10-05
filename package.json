@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node --harmony app",
-    "webpack": "webpack --watch"
+    "webpack": "webpack -d --watch"
   },
   "dependencies": {
     "babel-core": "^5.8.25",
@@ -16,21 +16,19 @@
     "express": "~4.13.1",
     "mongoose": "^4.4.19",
     "morgan": "~1.6.1",
-    "react": "^0.13.3",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-redux": "^4.4.5",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0",
     "rest": "^2.0.0",
     "serve-favicon": "~2.3.0"
   },
   "description": "This application provides an easy way to manage periodically repeating ToDos.\r You will be able to manage and access all your tasks on a web application as well as on your mobile phone.\r The intent of this application is to enforce discipline.",
-  "devDependencies": {
-    "json-loader": "^0.5.4",
-    "react-hot-loader": "^1.3.0"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/InverseIntegral/NeverRESTing.git"
   },
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/InverseIntegral/NeverRESTing/issues"
   },
