@@ -4,7 +4,10 @@ import ConnectedTodoList from '../containers/ConnectedTodoList'
 
 const App = () => (
     <div>
-        <AddTodo />
+        <div className="item">
+            <h1>NeverRESTing</h1>
+        </div>
+        <AddTodo/>
         <ConnectedTodoList/>
     </div>
 );
