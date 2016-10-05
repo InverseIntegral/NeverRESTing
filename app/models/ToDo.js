@@ -7,7 +7,7 @@ const Schema = mongoose.Schema;
 
 /* Defines the database schema of this entity */
 const ToDo = new Schema({
-    name: {type: String},
+    text: {type: String},
     added: {type: Date, default: Date.now()},
     state: {type: String, enum: ToDoStates.values(), default: ToDoStates.default()}
 });
