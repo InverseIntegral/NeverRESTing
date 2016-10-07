@@ -22,4 +22,4 @@ To configure the application edit the `.env` and the `mongo_start.bat` file.
 1. Start the MongoDB server using the batch file.
 2. Type `npm start` to start the NodeJS backend.
 3. Type `npm webpack` to start the webpack watch task.
-4. Open `localhost:3000/static/index.html` using a browser of your choice.
+4. Open `localhost:3000` using a browser of your choice.

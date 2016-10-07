@@ -31,7 +31,7 @@ const todos = (state = {
                 todos: action.state
             });
         default:
-            return state
+            return state;
     }
 };
 

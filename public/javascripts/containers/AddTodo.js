@@ -17,22 +17,18 @@ let AddTodo = ({dispatch}) => {
                 dispatch(addTodo(input.value));
                 input.value = ''
             }}>
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input ref={node => {
-                                    input = node
-                                }}/>
-                            </td>
-                            <td>
-                                <button type="submit">
-                                    Add Todo
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div className="row">
+                    <div className="input-field col s10">
+                        <input type="text" ref={node => {
+                            input = node
+                        }}/>
+                    </div>
+                    <div className="col s2">
+                        <button type="submit" className="btn-floating btn-large waves-effect waves-light light-blue darken-4">
+                            <i className="material-icons">add</i>
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
     )
