@@ -5,9 +5,13 @@ module.exports = {
     // The entry of this application
     entry: './public/javascripts/index.js',
 
+    resolve: {
+        root: path.resolve('./app')
+    },
+
     // The output should go to /build/bundle.js
     output: {
-        path: path.resolve(__dirname, "public/build"),
+        path: path.resolve(__dirname, 'public/build'),
         filename: 'bundle.js'
     },
 
@@ -19,7 +23,7 @@ module.exports = {
             {
                 test: /\.js/,
                 include: [
-                    path.resolve(__dirname, "public/javascripts")
+                    path.resolve(__dirname, 'public/javascripts')
                 ],
                 loaders: ['babel']
             }

@@ -30,7 +30,7 @@ const States = {
     /**
      * This todo has been created and is being worked on.
      */
-    WIP: new ToDoState("WIP"),
+    OPEN: new ToDoState("Open"),
 
     /**
      * This todo has been finished.
@@ -58,7 +58,7 @@ const States = {
      * @returns {*} Returns a string representation of the name.
      */
     default() {
-        return this.WIP.getName();
+        return this.OPEN.getName();
     }
 
 };
