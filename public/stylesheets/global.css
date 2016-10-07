@@ -8,15 +8,6 @@ html {
     align-items: center;
 }
 
-.fade-leave {
-    opacity: 1;
-}
-
-.fade-leave.fade-leave-active {
-    opacity: 0.01;
-    transition: opacity 300ms ease-in;
-}
-
 .input-field input[type=text]:focus {
     border-bottom: 1px solid #01579b;
     box-shadow: 0 1px 0 0 #01579b;

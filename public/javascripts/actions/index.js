@@ -61,8 +61,8 @@ export function addTodo(text) {
 export function deleteTodo(id) {
     return (dispatch) => {
         return client({
-            'path': API_URI + '/' + id,
-            'method': 'DELETE'
+            'path': API_URI + '/' + id + '/close',
+            'method': 'POST'
         }).then(() => {
             dispatch(removeTodo(id));
         });

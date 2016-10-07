@@ -4,11 +4,13 @@
     {
       "_id": "57f0bcce71c6300a14f11996",
       "text": "Kochen",
+      "state": "Open",
       "added": "2016-10-02T07:52:45.731Z"
     },
     {
       "_id": "57f0bcce71c6300a14f11997",
       "text": "Lernen",
+      "state": "Closed",
       "added": "2016-10-02T07:52:45.731Z"
     }
   ]

@@ -1,6 +1,10 @@
-const router = require('express').Router();
-const ToDo = require('../app/models/ToDo');
+const path = require('path');
+const appPath = path.resolve('./app');
 
+const ToDo = require(appPath + '/models/ToDo');
+const ToDoStates = require(appPath + '/models/ToDoStates');
+
+const router = require('express').Router();
 const DefaultResponseHandler = require('../app/handlers/DefaultResponseHandler');
 const NoContentResponseHandler = require('../app/handlers/NoContentResponseHandler');
 
@@ -44,7 +48,11 @@ router.post('/todos', (req, res) => {
     const {text} = req.body;
 
     if (!validate(text)) {
-        res.status(400).json('Invalid request');
+
+        res.status(400).json({
+            'message': 'Not enough parameters supplied'
+        });
+
         return;
     }
 
@@ -69,9 +77,13 @@ router.get('/todos/:id', (req, res) => {
     handlePromise(promise, res, DefaultResponseHandler);
 });
 
-router.delete('/todos/:id', (req, res) => {
-    const promise = ToDo.findOne({_id: req.params.id}).remove().exec();
-    handlePromise(promise, res, NoContentResponseHandler);
+/* Closes a todo */
+router.post('/todos/:id/close', (req, res) => {
+    const promise = ToDo.update({_id: req.params.id}, {
+        'state' : ToDoStates.FINISHED.getName()
+    }).exec();
+
+    handlePromise(promise, res, DefaultResponseHandler);
 });
 
 module.exports = router;
