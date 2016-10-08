@@ -1,8 +1,9 @@
 import rest from 'rest';
 import mime from 'rest/interceptor/mime';
+import config from 'json!../../config/env.json';
 
 const client = rest.wrap(mime);
-const API_URI = 'http://localhost:3000/todos';
+const API_URI = config.API_URI;
 
 export const receiveTodo = (json) => {
     return {
