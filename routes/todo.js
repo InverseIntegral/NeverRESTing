@@ -68,9 +68,7 @@ router.post('/todos', (req, res) => {
 /* GETs all the todos */
 router.get('/todos', (req, res) => {
     const promise = ToDo.find({}).exec();
-
-    setTimeout(() => handlePromise(promise, res, DefaultResponseHandler), 10000);
-    //handlePromise(promise, res, DefaultResponseHandler);
+    handlePromise(promise, res, DefaultResponseHandler);
 });
 
 /* GETs a specific todo by its id */
