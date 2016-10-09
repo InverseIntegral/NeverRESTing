@@ -39,7 +39,7 @@ export function fetchTodos() {
         return client(API_URI)
             .then(response => {
                 dispatch(receiveTodos(response.entity));
-            });
+            }, handleError);
     };
 }
 
@@ -55,7 +55,7 @@ export function addTodo(text) {
             }
         }).then(response => {
             dispatch(receiveTodo(response.entity));
-        });
+        }, handleError);
     }
 }
 
@@ -66,6 +66,10 @@ export function deleteTodo(id) {
             'method': 'POST'
         }).then(() => {
             dispatch(removeTodo(id));
-        });
+        }, handleError);
     }
 }
+
+const handleError = (error) => {
+    Materialize.toast("Couldn\'t reach the other end", 6000);
+};
