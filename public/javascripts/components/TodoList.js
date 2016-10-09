@@ -1,10 +1,10 @@
 import React, {PropTypes} from 'react'
 import Todo from './Todo'
-import {If, Then, Else} from 'react-if';
+import {If, Then} from 'react-if';
 
 const TodoList = ({todos, onTodoClick}) => {
     return (
-        <div className="item">
+        <div>
             <If condition={todos.length !== 0}>
                 <Then>
                     <ul className="collection">
