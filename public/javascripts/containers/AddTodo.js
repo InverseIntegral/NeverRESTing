@@ -2,11 +2,17 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {addTodo} from '../actions'
 
-let AddTodo = ({dispatch}) => {
+const mapStateToProps = (state) => {
+    return {
+        isFetching: state.isFetching
+    };
+};
+
+let AddTodo = ({isFetching, dispatch}) => {
     let input;
 
     return (
-        <div className="item">
+        <div>
             <form onSubmit={e => {
                 e.preventDefault();
 
@@ -19,7 +25,7 @@ let AddTodo = ({dispatch}) => {
             }}>
                 <div className="row">
                     <div className="input-field col s10">
-                        <input type="text" ref={node => {
+                        <input disabled={isFetching} type="text" ref={node => {
                             input = node
                         }}/>
                     </div>
@@ -34,6 +40,6 @@ let AddTodo = ({dispatch}) => {
     )
 };
 
-AddTodo = connect()(AddTodo);
+AddTodo = connect(mapStateToProps)(AddTodo);
 
 export default AddTodo
