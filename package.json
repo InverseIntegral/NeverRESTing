@@ -1,7 +1,7 @@
 {
   "name": "neverresting",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.2",
+  "private": false,
   "scripts": {
     "start": "node --harmony app",
     "webpack": "webpack -d --watch"
@@ -27,7 +27,7 @@
     "rest": "^2.0.0",
     "serve-favicon": "~2.3.0"
   },
-  "description": "This application provides an easy way to manage periodically repeating ToDos.\r You will be able to manage and access all your tasks on a web application as well as on your mobile phone.\r The intent of this application is to enforce discipline.",
+  "description": "This application provides an easy way to manage periodically repeating ToDos",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/InverseIntegral/NeverRESTing.git"
