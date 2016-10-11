@@ -25,7 +25,8 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "rest": "^2.0.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "webpack": "^1.13.2"
   },
   "description": "This application provides an easy way to manage periodically repeating ToDos",
   "repository": {
