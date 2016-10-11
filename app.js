@@ -17,6 +17,7 @@ const app = express();
 
 /* Custom routers */
 const todoRoutes = require('./routes/todo');
+const githubRoutes = require('./routes/github');
 
 app.use(logger('common'));
 app.use(bodyParser.json());
@@ -25,7 +26,8 @@ app.use(cookieParser());
 
 app.use('/',
     express.static(path.join(__dirname, 'public')),
-    todoRoutes);
+    todoRoutes,
+    githubRoutes);
 
 /**
  * Starts the express server and listens on the given port.
