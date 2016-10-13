@@ -10,22 +10,7 @@ router.get('/authenticate', (req, res) => {
     if (!isAuthenticated(session)) {
         sendAuthenticationPage(res);
     } else {
-        let token = session.access_token;
-
-        githubHelper.requestScopes(token)
-            .then(result => {
-                const scopes = githubHelper.extractScopes(result.headers);
-
-                if (scopes != null && scopes.indexOf('user:email') !== -1) {
-                    res.redirect('/');
-                } else {
-                    sendAuthenticationPage(res);
-                }
-
-            }, error => {
-                session.access_token = null;
-                sendAuthenticationPage(res);
-            });
+        res.redirect('/');
     }
 });
 

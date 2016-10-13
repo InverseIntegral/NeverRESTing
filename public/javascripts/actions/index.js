@@ -38,6 +38,7 @@ export function fetchTodos() {
 
         return client(API_URI)
             .then(response => {
+                checkResponseCode(response.status.code);
                 dispatch(receiveTodos(response.entity));
             }, handleError);
     };
@@ -54,6 +55,7 @@ export function addTodo(text) {
                 text
             }
         }).then(response => {
+            checkResponseCode(response.status.code);
             dispatch(receiveTodo(response.entity));
         }, handleError);
     }
@@ -64,11 +66,18 @@ export function deleteTodo(id) {
         return client({
             'path': API_URI + '/' + id + '/close',
             'method': 'POST'
-        }).then(() => {
+        }).then((response) => {
+            checkResponseCode(response.status.code);
             dispatch(removeTodo(id));
         }, handleError);
     }
 }
+
+const checkResponseCode = (code) => {
+    if (code == 401) {
+        window.location.href = "http://localhost:3000/authenticate";
+    }
+};
 
 const handleError = (error) => {
     Materialize.toast("Couldn\'t reach the other end", 6000);
