@@ -3,6 +3,7 @@ const appPath = path.resolve('./app');
 
 const ToDo = require(appPath + '/models/ToDo');
 const ToDoStates = require(appPath + '/models/ToDoStates');
+const githubHelper = require(appPath + '/helpers/githubHelper');
 
 const router = require('express').Router();
 const DefaultResponseHandler = require('../app/handlers/DefaultResponseHandler');
@@ -67,8 +68,16 @@ router.post('/todos', (req, res) => {
 
 /* GETs all the todos */
 router.get('/todos', (req, res) => {
-    const promise = ToDo.find({}).exec();
-    handlePromise(promise, res, DefaultResponseHandler);
+    let session = req.session;
+
+    getMail(session).then(mail => {
+        console.log(mail);
+
+        const promise = ToDo.find({}).exec();
+        handlePromise(promise, res, DefaultResponseHandler);
+    }, () => {
+        res.sendStatus(401).end();
+    });
 });
 
 /* GETs a specific todo by its id */
@@ -80,10 +89,38 @@ router.get('/todos/:id', (req, res) => {
 /* Closes a todo */
 router.post('/todos/:id/close', (req, res) => {
     const promise = ToDo.update({_id: req.params.id}, {
-        'state' : ToDoStates.FINISHED.getName()
+        'state': ToDoStates.FINISHED.getName()
     }).exec();
 
     handlePromise(promise, res, DefaultResponseHandler);
 });
+
+const getMail = (session) => {
+    return new Promise((resolve, reject) => {
+        let token = session.access_token;
+
+        if (token == null) {
+            reject();
+        }
+
+        githubHelper.requestScopes(token)
+            .then(result => {
+                const scopes = githubHelper.extractScopes(result.headers);
+
+                if (scopes != null && scopes.indexOf('user:email') !== -1) {
+
+                    githubHelper.requestMails(token)
+                        .then(result => {
+                            resolve(githubHelper.getPrimaryMail(result.entity));
+                        }, () => {
+                            reject();
+                        });
+                }
+            }, () => {
+                session.access_token = null;
+                reject();
+            });
+    });
+};
 
 module.exports = router;
