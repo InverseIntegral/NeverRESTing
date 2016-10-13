@@ -24,7 +24,11 @@ app.use(logger('common'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(session({ secret: 'NeverResting' }));
+app.use(session({
+    secret: 'NeverResting',
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use('/',
     express.static(path.join(__dirname, 'public')),
