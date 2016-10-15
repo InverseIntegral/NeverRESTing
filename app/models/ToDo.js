@@ -1,7 +1,6 @@
 /**
  * Created by Inverse Integral on 26.05.2016.
  */
-const ToDoStates = require('./ToDoStates');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -9,7 +8,7 @@ const Schema = mongoose.Schema;
 const ToDo = new Schema({
     text: {type: String},
     added: {type: Date, default: Date.now()},
-    state: {type: String, enum: ToDoStates.values(), default: ToDoStates.default()}
+    active: {type: Boolean, default: true}
 });
 
 /* Creates a new model and exports it directly */
