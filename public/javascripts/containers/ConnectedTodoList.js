@@ -1,11 +1,23 @@
 import {connect} from 'react-redux'
 import TodoList from '../components/TodoList'
 import {deleteTodo} from '../actions';
-import ToDoStates from 'models/ToDoStates';
 
 const mapStateToProps = (state) => {
+
+
     return {
-        todos: state.todos.filter(t => t.state === ToDoStates.OPEN.getName())
+        todos: state.todos.sort((a, b) => {
+
+            if (a.state > b.state) {
+                return -1;
+            }
+
+            if (a.state < b.state) {
+                return 1;
+            }
+
+            return 0;
+        })
     };
 };
 
@@ -19,7 +31,13 @@ const mapDispatchToProps = (dispatch) => {
 
 const ConnectedTodoList = connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    (stateProps, dispatchProps, ownProps) => {
+        return Object.assign({}, ownProps, stateProps, dispatchProps);
+    },
+    {
+        pure: false
+    }
 )(TodoList);
 
 export default ConnectedTodoList;

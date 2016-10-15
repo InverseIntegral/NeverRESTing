@@ -1,3 +1,5 @@
+import ToDoStates from 'models/ToDoStates';
+
 const todos = (state = {
     isFetching: false,
     todos: []
@@ -14,13 +16,13 @@ const todos = (state = {
         case 'REMOVE_TODO':
             let index = state.todos.findIndex((t) => t._id === action.id);
 
-            return Object.assign({}, state, {
-                isFetching: false,
-                todos: [
-                    ...state.todos.slice(0, index),
-                    ...state.todos.slice(index + 1)
-                ]
+            let newState = Object.assign({}, state, {
+                isFetching: false
             });
+
+            newState.todos[index].state = ToDoStates.FINISHED.getName();
+
+            return newState;
         case 'REQUEST_TODOS':
             return Object.assign({}, state, {
                 isFetching: true
