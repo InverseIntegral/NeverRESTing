@@ -108,7 +108,6 @@ const getMail = (session) => {
                 const scopes = githubHelper.extractScopes(result.headers);
 
                 if (scopes != null && scopes.indexOf('user:email') !== -1) {
-
                     githubHelper.requestMails(token)
                         .then(result => {
                             resolve(githubHelper.getPrimaryMail(result.entity));

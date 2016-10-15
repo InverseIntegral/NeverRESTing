@@ -4,6 +4,7 @@ import config from 'json!../../config/env.json';
 
 const client = rest.wrap(mime);
 const API_URI = config.API_URI;
+const AUTHENTICATION_URI = config.AUTHENTICATION_URI;
 
 export const receiveTodo = (json) => {
     return {
@@ -75,7 +76,7 @@ export function deleteTodo(id) {
 
 const checkResponseCode = (code) => {
     if (code == 401) {
-        window.location.href = "http://localhost:3000/authenticate";
+        window.location.href = AUTHENTICATION_URI;
     }
 };
 
