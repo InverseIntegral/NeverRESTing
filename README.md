@@ -19,10 +19,8 @@ The mobile application will probably be a [React Native](https://facebook.github
 All you need in order to run this application is the latest version of NodeJS and a MongoDB server.
 
 1. Start by configuring the following files:
-
-- `app/config/.env` Change the MongoDB and Github parameters.
-- `public/config/env.json` Change the backend URLs if necessary.
-
+   * `app/config/.env` Change the MongoDB and Github parameters.
+   * `public/config/env.json` Change the backend URLs if necessary.
 2. Start the MongoDB server using the batch file.
 3. Type `npm run-script start` to start the NodeJS backend.
 4. Type `npm run-script webpack` to start the webpack watch task.
