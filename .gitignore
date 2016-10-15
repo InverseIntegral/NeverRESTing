@@ -1,2 +1,4 @@
 node_modules/*
 data/*
+app/config/.env
+public/config/env.json
