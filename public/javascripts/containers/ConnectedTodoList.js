@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import TodoList from '../components/TodoList'
-import {deleteTodo} from '../actions';
+import {toggleTodo} from '../actions';
 
 const mapStateToProps = (state) => {
 
@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         onTodoClick: (id) => {
-            dispatch(deleteTodo(id))
+            dispatch(toggleTodo(id))
         }
     }
 };
@@ -36,7 +36,7 @@ const ConnectedTodoList = connect(
         return Object.assign({}, ownProps, stateProps, dispatchProps);
     },
     {
-        pure: false
+        pure: false // Forces an update and removes shallow check
     }
 )(TodoList);
 

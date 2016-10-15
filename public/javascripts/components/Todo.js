@@ -1,10 +1,9 @@
 import React, {PropTypes} from 'react'
-import ToDoStates from 'models/ToDoStates';
 
-const Todo = ({onClick, text, state}) => {
+const Todo = ({onClick, text, active}) => {
 
     let todoStyle = {
-        textDecoration: ToDoStates.OPEN.getName() == state ? 'none' : 'line-through'
+        textDecoration: active ? 'none' : 'line-through'
     };
 
     return (

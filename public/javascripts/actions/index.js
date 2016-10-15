@@ -6,6 +6,7 @@ const client = rest.wrap(mime);
 const API_URI = config.API_URI;
 const AUTHENTICATION_URI = config.AUTHENTICATION_URI;
 
+/** Actions **/
 export const receiveTodo = (json) => {
     return {
         type: 'RECEIVE_TODO',
@@ -13,9 +14,9 @@ export const receiveTodo = (json) => {
     }
 };
 
-export const removeTodo = (id) => {
+export const toggledTodo = (id) => {
     return {
-        type: 'REMOVE_TODO',
+        type: 'TOGGLED_TODO',
         id: id
     };
 };
@@ -33,13 +34,14 @@ export const receiveTodos = (json) => {
     };
 };
 
+/** Thunk Actions **/
 export function fetchTodos() {
     return (dispatch) => {
         dispatch(requestTodos());
 
         return client(API_URI)
+            .then(checkResponseCode)
             .then(response => {
-                checkResponseCode(response.status.code);
                 dispatch(receiveTodos(response.entity));
             }, handleError);
     };
@@ -55,31 +57,36 @@ export function addTodo(text) {
             'entity': {
                 text
             }
-        }).then(response => {
-            checkResponseCode(response.status.code);
-            dispatch(receiveTodo(response.entity));
-        }, handleError);
+        })
+            .then(checkResponseCode)
+            .then(response => {
+                dispatch(receiveTodo(response.entity));
+            }, handleError);
     }
 }
 
-export function deleteTodo(id) {
+export function toggleTodo(id) {
     return (dispatch) => {
         return client({
-            'path': API_URI + '/' + id + '/close',
+            'path': API_URI + '/' + id + '/toggle',
             'method': 'POST'
-        }).then((response) => {
-            checkResponseCode(response.status.code);
-            dispatch(removeTodo(id));
-        }, handleError);
+        })
+            .then(checkResponseCode)
+            .then(() => {
+                dispatch(toggledTodo(id));
+            }, handleError);
     }
 }
 
-const checkResponseCode = (code) => {
-    if (code == 401) {
+const checkResponseCode = (response) => {
+    if (response.status.code == 401) {
         window.location.href = AUTHENTICATION_URI;
+    } else {
+        return response;
+
     }
 };
 
-const handleError = (error) => {
+const handleError = () => {
     Materialize.toast("Couldn\'t reach the other end", 6000);
 };

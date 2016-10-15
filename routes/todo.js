@@ -2,7 +2,6 @@ const path = require('path');
 const appPath = path.resolve('./app');
 
 const ToDo = require(appPath + '/models/ToDo');
-const ToDoStates = require(appPath + '/models/ToDoStates');
 const githubHelper = require(appPath + '/helpers/githubHelper');
 
 const router = require('express').Router();
@@ -68,16 +67,8 @@ router.post('/todos', (req, res) => {
 
 /* GETs all the todos */
 router.get('/todos', (req, res) => {
-    let session = req.session;
-
-    getMail(session).then(mail => {
-        console.log(mail);
-
-        const promise = ToDo.find({}).exec();
-        handlePromise(promise, res, DefaultResponseHandler);
-    }, () => {
-        res.sendStatus(401).end();
-    });
+    const promise = ToDo.find({}).exec();
+    handlePromise(promise, res, DefaultResponseHandler);
 });
 
 /* GETs a specific todo by its id */
@@ -87,12 +78,16 @@ router.get('/todos/:id', (req, res) => {
 });
 
 /* Closes a todo */
-router.post('/todos/:id/close', (req, res) => {
-    const promise = ToDo.update({_id: req.params.id}, {
-        'state': ToDoStates.FINISHED.getName()
-    }).exec();
+router.post('/todos/:id/toggle', (req, res) => {
 
-    handlePromise(promise, res, DefaultResponseHandler);
+    ToDo.findOne({_id: req.params.id}).exec().then(data => {
+        const promise = ToDo.update({_id: req.params.id}, {
+            'active': !data.active
+        }).exec();
+
+        handlePromise(promise, res, DefaultResponseHandler);
+    });
+
 });
 
 const getMail = (session) => {
