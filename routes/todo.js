@@ -80,13 +80,14 @@ router.get('/todos/:id', (req, res) => {
 /* Closes a todo */
 router.post('/todos/:id/toggle', (req, res) => {
 
-    ToDo.findOne({_id: req.params.id}).exec().then(data => {
-        const promise = ToDo.update({_id: req.params.id}, {
-            'active': !data.active
-        }).exec();
+    ToDo.findOne({_id: req.params.id}).exec()
+        .then(data => {
+            const promise = ToDo.update({_id: req.params.id}, {
+                'active': !data.active
+            }).exec();
 
-        handlePromise(promise, res, DefaultResponseHandler);
-    });
+            handlePromise(promise, res, DefaultResponseHandler);
+        });
 
 });
 
