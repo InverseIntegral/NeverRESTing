@@ -11,5 +11,4 @@ const ToDo = new Schema({
     active: {type: Boolean, default: true}
 });
 
-/* Creates a new model and exports it directly */
-module.exports = mongoose.model('ToDo', ToDo);
+module.exports = ToDo;
