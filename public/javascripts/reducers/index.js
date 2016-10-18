@@ -3,14 +3,6 @@ const todos = (state = {
     todos: []
 }, action) => {
     switch (action.type) {
-        case 'RECEIVE_TODO':
-            return Object.assign({}, state, {
-                isFetching: false,
-                todos: [
-                    ...state.todos,
-                    action.state
-                ]
-            });
         case 'TOGGLED_TODO':
             let index = state.todos.findIndex((t) => t._id === action.id);
 

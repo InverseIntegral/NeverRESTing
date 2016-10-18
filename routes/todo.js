@@ -2,6 +2,7 @@ const path = require('path');
 const appPath = path.resolve('./app');
 
 const ToDo = require(appPath + '/models/ToDo');
+const User = require(appPath + '/models/User');
 const githubHelper = require(appPath + '/helpers/githubHelper');
 
 const router = require('express').Router();
@@ -44,49 +45,97 @@ const validate = (...check) => {
 
 /* POST request that creates a new todo */
 router.post('/todos', (req, res) => {
-    // Destructuring the request body
-    const {text} = req.body;
 
-    if (!validate(text)) {
+    getMail(req.session)
+        .then(mail => {
 
-        res.status(400).json({
-            'message': 'Not enough parameters supplied'
+            // Destructuring the request body
+            const {text} = req.body;
+
+            if (!validate(text)) {
+                res.status(400).json({
+                    'message': 'Not enough parameters supplied'
+                });
+
+                return;
+            }
+
+            const promise = User.findOneAndUpdate({
+                mail: mail
+            }, {
+                $push: {
+                    todos: {
+                        text
+                    }
+                }
+            }, {
+                new: true
+            }).exec();
+
+            handlePromise(promise, res, DefaultResponseHandler);
+        }, () => {
+            res.sendStatus(401).end();
         });
-
-        return;
-    }
-
-    // Create the new instance with the data
-    const instance = new ToDo();
-    instance.text = text;
-
-    // Save the new todo
-    const promise = instance.save();
-    handlePromise(promise, res, DefaultResponseHandler);
 });
 
 /* GETs all the todos */
 router.get('/todos', (req, res) => {
-    const promise = ToDo.find({}).exec();
-    handlePromise(promise, res, DefaultResponseHandler);
+
+    getMail(req.session)
+        .then(mail => {
+
+            User.findOne({'mail': mail}).exec()
+                .then(data => {
+
+                    if (data == null) {
+                        const instance = new User();
+                        instance.mail = mail;
+
+                        const promise = instance.save();
+                        handlePromise(promise, res, DefaultResponseHandler);
+                    } else {
+                        const handler = new DefaultResponseHandler(res);
+                        handler.handleSuccess(data);
+                    }
+                });
+        }, () => {
+            res.sendStatus(401).end();
+        });
 });
 
-/* GETs a specific todo by its id */
-router.get('/todos/:id', (req, res) => {
-    const promise = ToDo.findOne({_id: req.params.id}).exec();
-    handlePromise(promise, res, DefaultResponseHandler);
-});
-
-/* Closes a todo */
+/* Toggles a todo */
 router.post('/todos/:id/toggle', (req, res) => {
 
-    ToDo.findOne({_id: req.params.id}).exec()
-        .then(data => {
-            const promise = ToDo.update({_id: req.params.id}, {
-                'active': !data.active
-            }).exec();
+    getMail(req.session)
+        .then(mail => {
 
-            handlePromise(promise, res, DefaultResponseHandler);
+            User.findOne({
+                mail: mail,
+            }, {
+                todos: {
+                    $elemMatch: {
+                        _id: req.params.id
+                    }
+                }
+            }).exec().then(data => {
+                let toggledState = !data.todos[0].active;
+
+                const promise = User.findOneAndUpdate({
+                    mail: mail,
+                    'todos._id': req.params.id
+                }, {
+                    $set: {
+                        'todos.$.active': toggledState
+                    }
+                }, {
+                    new: true
+                }).exec();
+
+                handlePromise(promise, res, DefaultResponseHandler);
+            });
+
+        }, () => {
+            res.sendStatus(401).end();
         });
 
 });

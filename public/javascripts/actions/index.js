@@ -7,13 +7,6 @@ const API_URI = config.API_URI;
 const AUTHENTICATION_URI = config.AUTHENTICATION_URI;
 
 /** Actions **/
-export const receiveTodo = (json) => {
-    return {
-        type: 'RECEIVE_TODO',
-        state: json
-    }
-};
-
 export const toggledTodo = (id) => {
     return {
         type: 'TOGGLED_TODO',
@@ -42,7 +35,7 @@ export function fetchTodos() {
         return client(API_URI)
             .then(checkResponseCode)
             .then(response => {
-                dispatch(receiveTodos(response.entity));
+                dispatch(receiveTodos(response.entity.todos));
             }, handleError);
     };
 }
@@ -60,7 +53,7 @@ export function addTodo(text) {
         })
             .then(checkResponseCode)
             .then(response => {
-                dispatch(receiveTodo(response.entity));
+                dispatch(receiveTodos(response.entity.todos));
             }, handleError);
     }
 }

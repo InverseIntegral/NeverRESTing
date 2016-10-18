@@ -8,11 +8,11 @@ const mapStateToProps = (state) => {
     return {
         todos: state.todos.sort((a, b) => {
 
-            if (a.state > b.state) {
+            if (a.active > b.active) {
                 return -1;
             }
 
-            if (a.state < b.state) {
+            if (a.active < b.active) {
                 return 1;
             }
 
