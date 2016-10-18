@@ -1,10 +1,17 @@
 import React, {PropTypes} from 'react'
 
-const Todo = ({onClick, text}) => (
-    <li onClick={onClick} className="collection-item">
-        {text}
-    </li>
-);
+const Todo = ({onClick, text, active}) => {
+
+    let todoStyle = {
+        textDecoration: active ? 'none' : 'line-through'
+    };
+
+    return (
+        <li onClick={onClick} className="collection-item" style={todoStyle}>
+            {text}
+        </li>
+    )
+};
 
 Todo.propTypes = {
     onClick: PropTypes.func.isRequired,

@@ -1,19 +1,15 @@
 import rest from 'rest';
 import mime from 'rest/interceptor/mime';
+import config from 'json!../../config/env.json';
 
 const client = rest.wrap(mime);
-const API_URI = 'http://localhost:3000/todos';
+const API_URI = config.API_URI;
+const AUTHENTICATION_URI = config.AUTHENTICATION_URI;
 
-export const receiveTodo = (json) => {
+/** Actions **/
+export const toggledTodo = (id) => {
     return {
-        type: 'RECEIVE_TODO',
-        state: json
-    }
-};
-
-export const removeTodo = (id) => {
-    return {
-        type: 'REMOVE_TODO',
+        type: 'TOGGLED_TODO',
         id: id
     };
 };
@@ -31,14 +27,16 @@ export const receiveTodos = (json) => {
     };
 };
 
+/** Thunk Actions **/
 export function fetchTodos() {
     return (dispatch) => {
         dispatch(requestTodos());
 
         return client(API_URI)
+            .then(checkResponseCode)
             .then(response => {
-                dispatch(receiveTodos(response.entity));
-            });
+                dispatch(receiveTodos(response.entity.todos));
+            }, handleError);
     };
 }
 
@@ -52,19 +50,36 @@ export function addTodo(text) {
             'entity': {
                 text
             }
-        }).then(response => {
-            dispatch(receiveTodo(response.entity));
-        });
+        })
+            .then(checkResponseCode)
+            .then(response => {
+                dispatch(receiveTodos(response.entity.todos));
+            }, handleError);
     }
 }
 
-export function deleteTodo(id) {
+export function toggleTodo(id) {
     return (dispatch) => {
         return client({
-            'path': API_URI + '/' + id,
-            'method': 'DELETE'
-        }).then(() => {
-            dispatch(removeTodo(id));
-        });
+            'path': API_URI + '/' + id + '/toggle',
+            'method': 'POST'
+        })
+            .then(checkResponseCode)
+            .then(() => {
+                dispatch(toggledTodo(id));
+            }, handleError);
     }
 }
+
+const checkResponseCode = (response) => {
+    if (response.status.code == 401) {
+        window.location.href = AUTHENTICATION_URI;
+    } else {
+        return response;
+
+    }
+};
+
+const handleError = () => {
+    Materialize.toast("Couldn\'t reach the other end", 6000);
+};

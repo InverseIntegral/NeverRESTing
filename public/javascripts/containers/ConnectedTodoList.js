@@ -1,24 +1,43 @@
 import {connect} from 'react-redux'
 import TodoList from '../components/TodoList'
-import {deleteTodo} from '../actions';
+import {toggleTodo} from '../actions';
 
 const mapStateToProps = (state) => {
+
+
     return {
-        todos: state.todos
+        todos: state.todos.sort((a, b) => {
+
+            if (a.active > b.active) {
+                return -1;
+            }
+
+            if (a.active < b.active) {
+                return 1;
+            }
+
+            return 0;
+        })
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         onTodoClick: (id) => {
-            dispatch(deleteTodo(id))
+            dispatch(toggleTodo(id))
         }
     }
 };
 
 const ConnectedTodoList = connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    (stateProps, dispatchProps, ownProps) => {
+        return Object.assign({}, ownProps, stateProps, dispatchProps);
+    },
+    {
+        pure: false // Forces an update and removes shallow check
+    }
 )(TodoList);
 
 export default ConnectedTodoList;

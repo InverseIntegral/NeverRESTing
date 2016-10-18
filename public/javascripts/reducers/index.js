@@ -3,24 +3,15 @@ const todos = (state = {
     todos: []
 }, action) => {
     switch (action.type) {
-        case 'RECEIVE_TODO':
-            return Object.assign({}, state, {
-                isFetching: false,
-                todos: [
-                    ...state.todos,
-                    action.state
-                ]
-            });
-        case 'REMOVE_TODO':
+        case 'TOGGLED_TODO':
             let index = state.todos.findIndex((t) => t._id === action.id);
 
-            return Object.assign({}, state, {
-                isFetching: false,
-                todos: [
-                    ...state.todos.slice(0, index),
-                    ...state.todos.slice(index + 1)
-                ]
+            let newState = Object.assign({}, state, {
+                isFetching: false
             });
+
+            newState.todos[index].active = !newState.todos[index].active;
+            return newState;
         case 'REQUEST_TODOS':
             return Object.assign({}, state, {
                 isFetching: true

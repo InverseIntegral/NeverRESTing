@@ -1,18 +1,13 @@
 import React, {PropTypes} from 'react'
 import Todo from './Todo'
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { If, Then, Else } from 'react-if';
+import {If, Then} from 'react-if';
 
 const TodoList = ({todos, onTodoClick}) => {
     return (
-        <div className="item">
+        <div>
             <If condition={todos.length !== 0}>
-              <Then>
-                <ul className="collection" >
-                    <ReactCSSTransitionGroup
-                        transitionName="fade"
-                        transitionEnterTimeout={500}
-                        transitionLeaveTimeout={300}>
+                <Then>
+                    <ul className="collection">
                         {todos.map(todo =>
                             <Todo key={todo._id}
                                   {...todo}
@@ -21,9 +16,8 @@ const TodoList = ({todos, onTodoClick}) => {
                                   }}
                             />
                         )}
-                    </ReactCSSTransitionGroup>
-                </ul>
-              </Then>
+                    </ul>
+                </Then>
             </If>
         </div>
     );
