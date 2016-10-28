@@ -30,6 +30,7 @@ const checkSession = (req, res, next) => {
             res.redirect('/authentication');
         });
 };
+
 router.get('/', checkSession);
 router.get('/index.html', checkSession);
 router.get('/todos/*', checkSession);
