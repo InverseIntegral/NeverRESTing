@@ -3,7 +3,6 @@ const appPath = path.resolve('./app');
 
 const ToDo = require(appPath + '/models/ToDo');
 const User = require(appPath + '/models/User');
-const githubHelper = require(appPath + '/helpers/githubHelper');
 
 const router = require('express').Router();
 const DefaultResponseHandler = require('../app/handlers/DefaultResponseHandler');
@@ -44,127 +43,84 @@ const validate = (...check) => {
 };
 
 /* POST request that creates a new todo */
-router.post('/todos', (req, res) => {
+router.post('/', (req, res) => {
+    const mail = req.session.mail;
 
-    getMail(req.session)
-        .then(mail => {
+    // Destructuring the request body
+    const {text} = req.body;
 
-            // Destructuring the request body
-            const {text} = req.body;
-
-            if (!validate(text)) {
-                res.status(400).json({
-                    'message': 'Not enough parameters supplied'
-                });
-
-                return;
-            }
-
-            const promise = User.findOneAndUpdate({
-                mail: mail
-            }, {
-                $push: {
-                    todos: {
-                        text
-                    }
-                }
-            }, {
-                new: true
-            }).exec();
-
-            handlePromise(promise, res, DefaultResponseHandler);
-        }, () => {
-            res.sendStatus(401).end();
+    if (!validate(text)) {
+        res.status(400).json({
+            'message': 'Not enough parameters supplied'
         });
+
+        return;
+    }
+
+    const promise = User.findOneAndUpdate({
+        mail: mail
+    }, {
+        $push: {
+            todos: {
+                text
+            }
+        }
+    }, {
+        new: true
+    }).exec();
+
+    handlePromise(promise, res, DefaultResponseHandler);
 });
 
 /* GETs all the todos */
-router.get('/todos', (req, res) => {
+router.get('/', (req, res) => {
+    const mail = req.session.mail;
 
-    getMail(req.session)
-        .then(mail => {
+    User.findOne({'mail': mail}).exec()
+        .then(data => {
 
-            User.findOne({'mail': mail}).exec()
-                .then(data => {
+            if (data == null) {
+                const instance = new User();
+                instance.mail = mail;
 
-                    if (data == null) {
-                        const instance = new User();
-                        instance.mail = mail;
-
-                        const promise = instance.save();
-                        handlePromise(promise, res, DefaultResponseHandler);
-                    } else {
-                        const handler = new DefaultResponseHandler(res);
-                        handler.handleSuccess(data);
-                    }
-                });
-        }, () => {
-            res.sendStatus(401).end();
+                const promise = instance.save();
+                handlePromise(promise, res, DefaultResponseHandler);
+            } else {
+                const handler = new DefaultResponseHandler(res);
+                handler.handleSuccess(data);
+            }
         });
 });
 
 /* Toggles a todo */
-router.post('/todos/:id/toggle', (req, res) => {
+router.post('/:id/toggle', (req, res) => {
+    const mail = req.session.mail;
 
-    getMail(req.session)
-        .then(mail => {
+    User.findOne({
+        mail: mail,
+    }, {
+        todos: {
+            $elemMatch: {
+                _id: req.params.id
+            }
+        }
+    }).exec().then(data => {
+        let toggledState = !data.todos[0].active;
 
-            User.findOne({
-                mail: mail,
-            }, {
-                todos: {
-                    $elemMatch: {
-                        _id: req.params.id
-                    }
-                }
-            }).exec().then(data => {
-                let toggledState = !data.todos[0].active;
+        const promise = User.findOneAndUpdate({
+            mail: mail,
+            'todos._id': req.params.id
+        }, {
+            $set: {
+                'todos.$.active': toggledState
+            }
+        }, {
+            new: true
+        }).exec();
 
-                const promise = User.findOneAndUpdate({
-                    mail: mail,
-                    'todos._id': req.params.id
-                }, {
-                    $set: {
-                        'todos.$.active': toggledState
-                    }
-                }, {
-                    new: true
-                }).exec();
-
-                handlePromise(promise, res, DefaultResponseHandler);
-            });
-
-        }, () => {
-            res.sendStatus(401).end();
-        });
+        handlePromise(promise, res, DefaultResponseHandler);
+    });
 
 });
-
-const getMail = (session) => {
-    return new Promise((resolve, reject) => {
-        let token = session.access_token;
-
-        if (token == null) {
-            reject();
-        }
-
-        githubHelper.requestScopes(token)
-            .then(result => {
-                const scopes = githubHelper.extractScopes(result.headers);
-
-                if (scopes != null && scopes.indexOf('user:email') !== -1) {
-                    githubHelper.requestMails(token)
-                        .then(result => {
-                            resolve(githubHelper.getPrimaryMail(result.entity));
-                        }, () => {
-                            reject();
-                        });
-                }
-            }, () => {
-                session.access_token = null;
-                reject();
-            });
-    });
-};
 
 module.exports = router;

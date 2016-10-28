@@ -2,9 +2,11 @@ const rest = require('rest');
 const mime = require('rest/interceptor/mime');
 const template = require('rest/interceptor/template');
 const defaultRequest = require('rest/interceptor/defaultRequest');
+const errorCode = require('rest/interceptor/errorCode');
 
 const client = rest.wrap(mime)
     .wrap(template)
+    .wrap(errorCode, { code: 400 })
     .wrap(defaultRequest, {
         'headers': {
             'User-Agent': 'NeverRESTing',

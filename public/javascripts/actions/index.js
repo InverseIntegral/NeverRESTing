@@ -4,7 +4,6 @@ import config from 'json!../../config/env.json';
 
 const client = rest.wrap(mime);
 const API_URI = config.API_URI;
-const AUTHENTICATION_URI = config.AUTHENTICATION_URI;
 
 /** Actions **/
 export const toggledTodo = (id) => {
@@ -33,7 +32,6 @@ export function fetchTodos() {
         dispatch(requestTodos());
 
         return client(API_URI)
-            .then(checkResponseCode)
             .then(response => {
                 dispatch(receiveTodos(response.entity.todos));
             }, handleError);
@@ -50,11 +48,9 @@ export function addTodo(text) {
             'entity': {
                 text
             }
-        })
-            .then(checkResponseCode)
-            .then(response => {
-                dispatch(receiveTodos(response.entity.todos));
-            }, handleError);
+        }).then(response => {
+            dispatch(receiveTodos(response.entity.todos));
+        }, handleError);
     }
 }
 
@@ -63,22 +59,11 @@ export function toggleTodo(id) {
         return client({
             'path': API_URI + '/' + id + '/toggle',
             'method': 'POST'
-        })
-            .then(checkResponseCode)
-            .then(() => {
-                dispatch(toggledTodo(id));
-            }, handleError);
+        }).then(() => {
+            dispatch(toggledTodo(id));
+        }, handleError);
     }
 }
-
-const checkResponseCode = (response) => {
-    if (response.status.code == 401) {
-        window.location.href = AUTHENTICATION_URI;
-    } else {
-        return response;
-
-    }
-};
 
 const handleError = () => {
     Materialize.toast("Couldn\'t reach the other end", 6000);

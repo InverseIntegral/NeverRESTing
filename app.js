@@ -19,6 +19,7 @@ const app = express();
 /* Custom routers */
 const todoRoutes = require('./routes/todo');
 const githubRoutes = require('./routes/github');
+const mainRoutes = require('./routes/main');
 
 app.use(logger('common'));
 app.use(bodyParser.json());
@@ -31,9 +32,11 @@ app.use(session({
 }));
 
 app.use('/',
-    express.static(path.join(__dirname, 'public')),
-    todoRoutes,
-    githubRoutes);
+    githubRoutes,
+    mainRoutes,
+    express.static(path.join(__dirname, 'public')));
+
+app.use('/todos', todoRoutes);
 
 /**
  * Starts the express server and listens on the given port.

@@ -4,8 +4,8 @@ const appPath = path.resolve('./app');
 const githubHelper = require(appPath + '/helpers/githubHelper');
 const router = require('express').Router();
 
-router.get('/authenticate', (req, res) => {
-    res.redirect('https://github.com/login/oauth/authorize?scope=user:email&client_id=' + process.env.GITHUB_ID);
+router.get('/authentication', (req, res) => {
+    res.sendFile(path.resolve('public/authentication.html'));
 });
 
 router.get('/github', (req, res) => {
