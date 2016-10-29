@@ -1,11 +1,11 @@
 const expect = require('chai').expect;
-const DefaultResponseHandler = require('../../app/handlers/DefaultResponseHandler');
+const NoContentResponseHandler = require('../../app/handlers/NoContentResponseHandler');
 
-describe('DefaultResponseHandler', () => {
+describe('NoContentResponseHandler', () => {
 
     describe('#constructor', () => {
         it('should construct an object with a symbol attribute', () => {
-            const handler = new DefaultResponseHandler();
+            const handler = new NoContentResponseHandler();
 
             expect(handler).to.have.property('responseKey');
             expect(handler.responseKey).to.be.a('symbol');
@@ -16,7 +16,7 @@ describe('DefaultResponseHandler', () => {
                 'test': 42
             };
 
-            const handler = new DefaultResponseHandler(response);
+            const handler = new NoContentResponseHandler(response);
 
             expect(handler[handler.responseKey]).to.be.a('object');
             expect(handler[handler.responseKey]).to.be.deep.equal(response);
@@ -32,17 +32,16 @@ describe('DefaultResponseHandler', () => {
                     return this;
                 },
 
-                send(result) {
-                    this.result = result;
+                end() {
+                    this.end = true;
                 }
             };
 
-            const handler = new DefaultResponseHandler(response);
-            const result = 'Resultat';
+            const handler = new NoContentResponseHandler(response);
 
-            handler.handleSuccess(result);
-            expect(response.status).to.be.equal(200);
-            expect(response.result).to.be.equal(result);
+            handler.handleSuccess();
+            expect(response.status).to.be.equal(204);
+            expect(response.end).to.be.true;
         });
     });
 
