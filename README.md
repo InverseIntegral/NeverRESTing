@@ -1,4 +1,4 @@
-# NeverRESTing
+# NeverRESTing [![Build Status](https://travis-ci.org/InverseIntegral/NeverRESTing.svg?branch=master)](https://travis-ci.org/InverseIntegral/NeverRESTing)
 This application provides an easy way to manage periodically repeating ToDos.
 You will be able to manage and access all your tasks on a web application as well as on your mobile phone.
 The intent of this application is to enforce discipline. To connect your todos we use GitHub as an
