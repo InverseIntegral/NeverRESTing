@@ -21,7 +21,10 @@ const todoRoutes = require('./routes/todo');
 const githubRoutes = require('./routes/github');
 const mainRoutes = require('./routes/main');
 
-app.use(logger('common'));
+if(process.env.NODE_ENV  !== 'test') {
+    app.use(logger('common'));
+}
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
