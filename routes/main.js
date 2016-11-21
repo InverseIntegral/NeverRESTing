@@ -31,8 +31,6 @@ const checkSession = (req, res, next) => {
         });
 };
 
-router.get('/', checkSession);
-router.get('/index.html', checkSession);
-router.get('/todos/*', checkSession);
+router.get(['/', '/index.html', '/todos', '/todos/*'], checkSession);
 
 module.exports = router;
