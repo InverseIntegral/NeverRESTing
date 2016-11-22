@@ -9,12 +9,23 @@ router.get('/authentication', (req, res) => {
 });
 
 router.get('/github', (req, res) => {
-    let session = req.session;
+    const session = req.session;
+    const code = req.query.code;
 
-    githubHelper.requestToken(req.query.code)
-        .then((response) => {
-            session.access_token = response.entity.access_token;
-            res.redirect('/');
+    if (code == null) {
+        res.sendStatus(400).end();
+    }
+
+    githubHelper.requestToken(code)
+        .then(response => {
+            const token = response.entity.access_token;
+
+            if (token !== null) {
+                session.access_token = token;
+                res.redirect('/');
+            } else {
+                res.sendStatus(400).end();
+            }
         });
 });
 
