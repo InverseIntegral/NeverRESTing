@@ -6,7 +6,7 @@ const ToDo = require('./ToDo');
 const Schema = mongoose.Schema;
 
 const User = new Schema({
-    mail: {type: String},
+    id: {type: String},
     todos: [ToDo]
 });
 

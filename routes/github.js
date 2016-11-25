@@ -1,32 +1,13 @@
-const path = require('path');
-const appPath = path.resolve('./app');
-
-const githubHelper = require(appPath + '/helpers/githubHelper');
+const passport = require('passport');
 const router = require('express').Router();
+const path = require('path');
 
-router.get('/authentication', (req, res) => {
-    res.sendFile(path.resolve('public/authentication.html'));
-});
+router.get('/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/login' }),
+    (req, res) => res.redirect('/'));
 
-router.get('/github', (req, res) => {
-    const session = req.session;
-    const code = req.query.code;
+router.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
 
-    if (code == null) {
-        res.sendStatus(400).end();
-    }
-
-    githubHelper.requestToken(code)
-        .then(response => {
-            const token = response.entity.access_token;
-
-            if (token !== null) {
-                session.access_token = token;
-                res.redirect('/');
-            } else {
-                res.sendStatus(400).end();
-            }
-        });
-});
+router.get('/login', (req, res) => res.sendFile(path.resolve('public/authentication.html')));
 
 module.exports = router;
