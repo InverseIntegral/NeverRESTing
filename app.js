@@ -14,8 +14,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 
 // Passport
-const passport = require('passport');
-const GitHubStrategy = require('passport-github2');
+var passport = require('passport');
+var GitHubStrategy = require('passport-github2').Strategy;
 
 const mongoose = require('mongoose');
 const User = require(appPath + '/models/User');
@@ -41,8 +41,7 @@ passport.use(new GitHubStrategy({
         clientID: process.env.GITHUB_ID,
         clientSecret: process.env.GITHUB_SECRET,
         callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    },
-    function (accessToken, refreshToken, profile, done) {
+    }, (accessToken, refreshToken, profile, done) => {
         User.findOne({'id': profile.id})
             .exec()
             .then(data => {
@@ -61,28 +60,16 @@ passport.use(new GitHubStrategy({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(session({
-    secret: 'NeverResting',
-    resave: false,
-    saveUninitialized: false
-}));
+app.use(session({secret: 'NeverResting', resave: false, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-
-    res.redirect('/login')
+    req.isAuthenticated() ? next() : res.redirect('/login');
 };
 
-app.use('/',
-    githubRoutes,
-    ensureAuthenticated,
-    express.static(path.join(__dirname, 'public')));
-
-app.use('/todos', todoRoutes);
+app.use('/', githubRoutes, express.static(path.join(__dirname, 'public')));
+app.use('/todos', ensureAuthenticated, todoRoutes);
 
 /**
  * Starts the express server and listens on the given port.
