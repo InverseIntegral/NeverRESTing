@@ -3,73 +3,69 @@ require('dotenv').config({
 });
 
 const path = require('path');
-const appPath = path.resolve('./app');
-
 const logger = require('morgan');
+const mongoose = require('mongoose');
+
+// Mongoose should use the native promise
+mongoose.Promise = global.Promise;
 
 // Express
 const express = require('express');
+const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 
 // Passport
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 
-const mongoose = require('mongoose');
-const User = require(appPath + '/models/User');
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
 
-// Mongoose should use the native promise
-mongoose.Promise = global.Promise;
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
+});
+
+passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_ID,
+        clientSecret: process.env.GITHUB_SECRET,
+        callbackURL: "http://localhost:3000/auth/github/callback"
+    }, function (accessToken, refreshToken, profile, done) {
+        process.nextTick(function () {
+            return done(null, profile.id);
+        });
+    }
+));
 
 const port = process.env.PORT || 3000;
 const app = express();
-
-/* Custom routers */
-const todoRoutes = require('./routes/todo');
-const githubRoutes = require('./routes/github');
 
 if (process.env.NODE_ENV !== 'test') {
     app.use(logger('common'));
 }
 
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
-
-passport.use(new GitHubStrategy({
-        clientID: process.env.GITHUB_ID,
-        clientSecret: process.env.GITHUB_SECRET,
-        callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    }, (accessToken, refreshToken, profile, done) => {
-        User.findOne({'id': profile.id})
-            .exec()
-            .then(data => {
-                if (data == null) {
-                    const instance = new User();
-                    instance.id = profile.id;
-
-                    instance.save().then(data => done(null, data));
-                } else {
-                    done(null, data);
-                }
-            });
-    }
-));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
-app.use(session({secret: 'NeverResting', resave: false, saveUninitialized: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(session({
+    secret: 'NeverResting',
+    resave: true,
+    saveUninitialized: true,
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
+const todoRoute = require('./routes/todo');
+const githubRoute = require('./routes/github');
+
 const ensureAuthenticated = (req, res, next) => {
-    req.isAuthenticated() ? next() : res.redirect('/login');
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/login')
 };
 
-app.use('/', githubRoutes, express.static(path.join(__dirname, 'public')));
-app.use('/todos', ensureAuthenticated, todoRoutes);
+app.use('/', githubRoute, express.static(path.join(__dirname, 'public')));
+app.use('/todos', ensureAuthenticated, todoRoute);
 
 /**
  * Starts the express server and listens on the given port.

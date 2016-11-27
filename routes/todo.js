@@ -44,9 +44,6 @@ const validate = (...check) => {
 
 /* POST request that creates a new todo */
 router.post('/', (req, res) => {
-    const mail = req.session.mail;
-
-    // Destructuring the request body
     const {text} = req.body;
 
     if (!validate(text)) {
@@ -58,7 +55,7 @@ router.post('/', (req, res) => {
     }
 
     const promise = User.findOneAndUpdate({
-        mail: mail
+        id: req.user
     }, {
         $push: {
             todos: {
@@ -74,30 +71,17 @@ router.post('/', (req, res) => {
 
 /* GETs all the todos */
 router.get('/', (req, res) => {
-    const mail = req.session.mail;
-
-    User.findOne({'mail': mail}).exec()
+    User.findOne({'id': req.user}).exec()
         .then(data => {
-
-            if (data == null) {
-                const instance = new User();
-                instance.mail = mail;
-
-                const promise = instance.save();
-                handlePromise(promise, res, DefaultResponseHandler);
-            } else {
-                const handler = new DefaultResponseHandler(res);
-                handler.handleSuccess(data);
-            }
+            const handler = new DefaultResponseHandler(res);
+            handler.handleSuccess(data);
         });
 });
 
 /* Toggles a todo */
 router.post('/:id/toggle', (req, res) => {
-    const mail = req.session.mail;
-
     User.findOne({
-        mail: mail,
+        id: req.user,
     }, {
         todos: {
             $elemMatch: {
@@ -108,7 +92,7 @@ router.post('/:id/toggle', (req, res) => {
         let toggledState = !data.todos[0].active;
 
         const promise = User.findOneAndUpdate({
-            mail: mail,
+            id: req.user,
             'todos._id': req.params.id
         }, {
             $set: {

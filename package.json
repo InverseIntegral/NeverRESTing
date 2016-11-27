@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "private": false,
   "scripts": {
-    "start": "node %NODE_DEBUG_OPTION% --harmony app",
+    "start": "node --harmony app",
     "webpack": "webpack -d --watch",
     "test": "mocha --recursive test"
   },
@@ -19,6 +19,7 @@
     "express": "~4.13.1",
     "express-session": "^1.14.1",
     "json-loader": "^0.5.4",
+    "method-override": "^2.3.7",
     "mocha": "^3.1.2",
     "mongoose": "^4.4.19",
     "morgan": "~1.6.1",
