@@ -19,23 +19,14 @@ const bodyParser = require('body-parser');
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (obj, done) {
-    done(null, obj);
-});
+passport.serializeUser((user, done) =>done(null, user));
+passport.deserializeUser((obj, done) =>  done(null, obj));
 
 passport.use(new GitHubStrategy({
         clientID: process.env.GITHUB_ID,
         clientSecret: process.env.GITHUB_SECRET,
-        callbackURL: "http://localhost:3000/auth/github/callback"
-    }, function (accessToken, refreshToken, profile, done) {
-        process.nextTick(function () {
-            return done(null, profile.id);
-        });
-    }
+        callbackURL: process.env.GITHUB_CALLBACK_URL
+    }, (accessToken, refreshToken, profile, done) => done(null, profile.id)
 ));
 
 const port = process.env.PORT || 3000;
@@ -60,9 +51,14 @@ const todoRoute = require('./routes/todo');
 const githubRoute = require('./routes/github');
 
 const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) { return next(); }
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
     res.redirect('/login')
 };
+
+app.all(['/', '/index.html'], ensureAuthenticated);
 
 app.use('/', githubRoute, express.static(path.join(__dirname, 'public')));
 app.use('/todos', ensureAuthenticated, todoRoute);
