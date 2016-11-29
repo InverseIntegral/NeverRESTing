@@ -16,18 +16,18 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 // Passport
-var passport = require('passport');
-var GitHubStrategy = require('passport-github2').Strategy;
+const passport = require('passport');
+const GitHubStrategy = require('passport-github').Strategy;
 
-passport.serializeUser((user, done) =>done(null, user));
-passport.deserializeUser((obj, done) =>  done(null, obj));
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((obj, done) => done(null, obj));
 
 passport.use(new GitHubStrategy({
-        clientID: process.env.GITHUB_ID,
-        clientSecret: process.env.GITHUB_SECRET,
-        callbackURL: process.env.GITHUB_CALLBACK_URL
-    }, (accessToken, refreshToken, profile, done) => done(null, profile.id)
-));
+    clientID: process.env.GITHUB_ID,
+    clientSecret: process.env.GITHUB_SECRET,
+    callbackURL: process.env.GITHUB_CALLBACK_URL,
+    scope: 'user:email',
+}, (accessToken, refreshToken, profile, done) => done(null, profile.id)));
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(session({
     secret: 'NeverResting',
