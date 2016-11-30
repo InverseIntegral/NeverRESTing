@@ -7,6 +7,7 @@ const Schema = mongoose.Schema;
 
 const User = new Schema({
     id: {type: String},
+    username: {type: String},
     email: {type: String},
     todos: [ToDo]
 });
