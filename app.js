@@ -39,7 +39,7 @@ passport.use(new GitHubStrategy({
                 const email = profile.emails.filter(e => e.primary)[0].value;
                 const newUser = new User({id, username: profile.username, email});
 
-                newUser.save().exec().then(done(null, id));
+                newUser.save().then(done(null, id));
             } else {
                 done(null, id);
             }
