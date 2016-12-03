@@ -4,9 +4,9 @@ import ConnectedTodoList from '../containers/ConnectedTodoList'
 import ConnectedSpinner from '../containers/ConnectedSpinner'
 
 const App = () => (
-    <div>
-        <div>
-            <h1>NeverRESTing</h1>
+    <div className="flex_parent">
+        <div className="flex_item">
+            <h1>ToDos</h1>
         </div>
         <AddTodo/>
         <ConnectedSpinner/>

@@ -12,6 +12,10 @@ html {
     align-items: center;
 }
 
+.flex_item {
+    width: 40%;
+}
+
 .center {
     text-align: center;
 }

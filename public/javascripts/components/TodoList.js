@@ -4,7 +4,7 @@ import {If, Then} from 'react-if';
 
 const TodoList = ({todos, onTodoClick}) => {
     return (
-        <div>
+        <div className="flex_item">
             <If condition={todos.length !== 0}>
                 <Then>
                     <ul className="collection">

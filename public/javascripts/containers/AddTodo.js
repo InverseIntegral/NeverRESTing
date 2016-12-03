@@ -12,7 +12,7 @@ let AddTodo = ({isFetching, dispatch}) => {
     let input;
 
     return (
-        <div>
+        <div className="flex_item">
             <form onSubmit={e => {
                 e.preventDefault();
 
