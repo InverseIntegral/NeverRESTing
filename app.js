@@ -6,7 +6,8 @@ const path = require('path');
 const logger = require('morgan');
 
 const mongoose = require('mongoose');
-const User = require('./app/models/User');
+
+const {passport, ensureAuthenticated} = require('./app/passport/configuration');
 
 // Mongoose should use the native promise
 mongoose.Promise = global.Promise;
@@ -16,35 +17,6 @@ const express = require('express');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
-// Passport
-const passport = require('passport');
-const GitHubStrategy = require('passport-github').Strategy;
-
-passport.serializeUser((id, done) => done(null, id));
-passport.deserializeUser((id, done) => done(null, id));
-
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_ID,
-    clientSecret: process.env.GITHUB_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL,
-    scope: 'user:email',
-}, (accessToken, refreshToken, profile, done) => {
-    const id = profile.id;
-
-    User.findOne({id})
-        .exec()
-        .then(data => {
-            if (data == null) {
-                const email = profile.emails.filter(e => e.primary)[0].value;
-                const newUser = new User({id, username: profile.username, email});
-
-                newUser.save().then(done(null, id));
-            } else {
-                done(null, id);
-            }
-        });
-}));
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -66,14 +38,6 @@ app.use(passport.session());
 
 const todoRoute = require('./routes/todo');
 const githubRoute = require('./routes/github');
-
-const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-
-    res.redirect('/login')
-};
 
 app.all(['/', '/index.html'], ensureAuthenticated);
 
