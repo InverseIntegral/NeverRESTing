@@ -1,38 +1,27 @@
 const passport = require('passport');
-const GitHubStrategy = require('passport-github').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('../models/User');
 
-passport.serializeUser((id, done) => done(null, id));
-passport.deserializeUser((id, done) => done(null, id));
-
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_ID,
-    clientSecret: process.env.GITHUB_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL,
-    scope: 'user:email',
-}, (accessToken, refreshToken, profile, done) => {
-    const id = profile.id;
-
-    User.findOne({id})
-        .exec()
-        .then(data => {
-            if (data == null) {
-                const email = profile.emails.filter(e => e.primary)[0].value;
-                const newUser = new User({id, username: profile.username, email});
-
-                newUser.save().then(done(null, id));
-            } else {
-                done(null, id);
-            }
-        });
-}));
-
-const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-
-    res.redirect('/login')
+const options = {
+    secretOrKey: 'abc',
+    jwtFromRequest: ExtractJwt.fromAuthHeader()
 };
 
-module.exports = {passport, ensureAuthenticated};
+passport.use(new JwtStrategy(options, (jwt_payload, done) => {
+    const _id = jwt_payload._id;
+
+    User.findOne({_id}, (err, user) => {
+        if (err) {
+            return done(err, false);
+        }
+
+        if (user) {
+            done(null, user);
+        } else {
+            done(null, false);
+        }
+    });
+}));
+
+module.exports = passport;

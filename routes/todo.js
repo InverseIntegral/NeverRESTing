@@ -71,7 +71,7 @@ router.post('/', (req, res) => {
 
 /* GETs all the todos */
 router.get('/', (req, res) => {
-    User.findOne({'id': req.user}).exec()
+    User.findOne({'_id': req.user._id}).exec()
         .then(data => {
             const handler = new DefaultResponseHandler(res);
             handler.handleSuccess(data);
