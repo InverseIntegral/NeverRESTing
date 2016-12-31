@@ -1,37 +1,29 @@
 const router = require('express').Router();
 const User = require('../app/models/User');
 const jwt = require('jwt-simple');
-const secret = 'abc';
-
-const newUser = new User({
-    username: "admin",
-    password: "test"
-});
-
-newUser.save(function(err) {
-    if (err) {
-        console.log(err);
-    }
-});
 
 router.post('/authenticate', (req, res) => {
-    const failureResponse = {success: false, message: 'Authentication failed'};
+    const {username, password} = req.body;
+    const failure = {success: false, message: 'Authentication failed'};
 
     User.findOne({
-        username: req.body.username
+        username
     }, (err, user) => {
-
         if (err) throw err;
 
         if (!user) {
-            res.json(failureResponse);
+            res.json(failure);
         } else {
-            user.comparePassword(req.body.password, function (err, isMatch) {
+            user.comparePassword(password, (err, isMatch) =>{
                 if (isMatch && !err) {
-                    const token = jwt.encode(user, secret);
+                    const token = jwt.encode({
+                        id: user._id,
+                        expires: Date.now() + 600000
+                    }, process.env.JWT_SECRET);
+
                     res.json({success: true, token: 'JWT ' + token});
                 } else {
-                    res.send(failureResponse);
+                    res.send(failure);
                 }
             });
         }

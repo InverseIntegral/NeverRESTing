@@ -11,7 +11,7 @@ const authenticationRoute = require('./routes/authentication');
 expressApp.use(passport.initialize());
 
 expressApp.use('/', authenticationRoute, express.static(path.join(__dirname, './public')));
-expressApp.use('/todos', passport.authenticate('jwt', {session: false}), todoRoute);
+expressApp.use('/todos', passport.authenticate(), todoRoute);
 /**
  * Starts the express server and listens on the given port.
  */

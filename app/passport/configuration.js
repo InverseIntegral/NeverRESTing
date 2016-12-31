@@ -4,16 +4,20 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const User = require('../models/User');
 
 const options = {
-    secretOrKey: 'abc',
+    secretOrKey: process.env.JWT_SECRET,
     jwtFromRequest: ExtractJwt.fromAuthHeader()
 };
 
 passport.use(new JwtStrategy(options, (jwt_payload, done) => {
-    const _id = jwt_payload._id;
+    const _id = jwt_payload.id;
 
     User.findOne({_id}, (err, user) => {
         if (err) {
             return done(err, false);
+        }
+
+        if (jwt_payload.expires < Date.now()) {
+            done(null, false);
         }
 
         if (user) {
@@ -24,4 +28,14 @@ passport.use(new JwtStrategy(options, (jwt_payload, done) => {
     });
 }));
 
-module.exports = passport;
+module.exports = {
+
+    initialize: () => {
+        return passport.initialize();
+    },
+
+    authenticate: () => {
+        return passport.authenticate('jwt', {session: false});
+    }
+
+};
