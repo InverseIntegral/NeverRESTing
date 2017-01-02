@@ -1,4 +1,6 @@
-const todos = (state = {
+const state = (state = {
+    isAuthenticated: false,
+    token: null,
     isFetching: false,
     todos: []
 }, action) => {
@@ -21,9 +23,14 @@ const todos = (state = {
                 isFetching: false,
                 todos: action.state
             });
+        case 'LOGGED_IN':
+            return Object.assign({}, state, {
+                isAuthenticated: true,
+                token: action.token
+            });
         default:
             return state;
     }
 };
 
-export default todos
+export default state

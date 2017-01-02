@@ -4,6 +4,7 @@ import config from 'json!../../config/env.json';
 
 const client = rest.wrap(mime);
 const API_URI = config.API_URI;
+const AUTH_URI = config.AUTH_URI;
 
 /** Actions **/
 export const toggledTodo = (id) => {
@@ -23,6 +24,13 @@ export const receiveTodos = (json) => {
     return {
         type: 'RECEIVE_TODOS',
         state: json
+    };
+};
+
+const loggedIn = (token) => {
+    return {
+        type: 'LOGGED_IN',
+        token
     };
 };
 
@@ -64,6 +72,30 @@ export function toggleTodo(id) {
         }, handleError);
     }
 }
+
+export function login(username, password) {
+    return (dispatch) => {
+        return client({
+            'path': AUTH_URI,
+            'method': 'POST',
+            'headers': {
+                'Content-Type': 'application/json'
+            },
+            'entity': {
+                username,
+                password
+            }
+        }).then((response) => {
+            if (response.status.code == 200) {
+                dispatch(loggedIn(response.entity.token));
+                dispatch(fetchTodos());
+            } else {
+                //TODO: Show an error message
+            }
+        }, handleError);
+    };
+}
+
 
 const handleError = () => {
     Materialize.toast("Couldn\'t reach the other end", 6000);
