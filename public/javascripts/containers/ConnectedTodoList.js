@@ -15,14 +15,15 @@ const mapStateToProps = (state) => {
             }
 
             return 0;
-        })
+        }),
+        token: state.token
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onTodoClick: (id) => {
-            dispatch(toggleTodo(id))
+        onTodoClick: (token, id) => {
+            dispatch(toggleTodo(token, id))
         }
     }
 };

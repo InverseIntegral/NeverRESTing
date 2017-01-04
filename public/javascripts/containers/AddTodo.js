@@ -4,11 +4,12 @@ import {addTodo} from '../actions'
 
 const mapStateToProps = (state) => {
     return {
-        isFetching: state.isFetching
+        isFetching: state.isFetching,
+        token: state.token
     };
 };
 
-let AddTodo = ({isFetching, dispatch}) => {
+let AddTodo = ({isFetching, token, dispatch}) => {
     let input;
 
     return (
@@ -20,7 +21,7 @@ let AddTodo = ({isFetching, dispatch}) => {
                     return
                 }
 
-                dispatch(addTodo(input.value));
+                dispatch(addTodo(token, input.value));
                 input.value = ''
             }}>
                 <div className="row">

@@ -2,7 +2,7 @@ import React, {PropTypes} from 'react'
 import Todo from './Todo'
 import {If, Then} from 'react-if';
 
-const TodoList = ({todos, onTodoClick}) => {
+const TodoList = ({todos, token, onTodoClick}) => {
     return (
         <div className="flex_item">
             <If condition={todos.length !== 0}>
@@ -12,7 +12,7 @@ const TodoList = ({todos, onTodoClick}) => {
                             <Todo key={todo._id}
                                   {...todo}
                                   onClick={() => {
-                                      onTodoClick(todo._id);
+                                      onTodoClick(token, todo._id);
                                   }}
                             />
                         )}
@@ -28,6 +28,7 @@ TodoList.propTypes = {
         _id: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired
     }).isRequired).isRequired,
+    token: PropTypes.string.isRequired,
     onTodoClick: PropTypes.func.isRequired
 };
 

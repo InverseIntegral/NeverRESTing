@@ -35,23 +35,28 @@ const loggedIn = (token) => {
 };
 
 /** Thunk Actions **/
-export function fetchTodos() {
+export function fetchTodos(token) {
     return (dispatch) => {
         dispatch(requestTodos());
 
-        return client(API_URI)
-            .then(response => {
-                dispatch(receiveTodos(response.entity.todos));
-            }, handleError);
+        return client({
+            'path': API_URI,
+            'headers': {
+                'Authorization': token
+            }
+        }).then(response => {
+            dispatch(receiveTodos(response.entity.todos));
+        }, handleError);
     };
 }
 
-export function addTodo(text) {
+export function addTodo(token, text) {
     return (dispatch) => {
         return client({
             'path': API_URI,
             'headers': {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': token
             },
             'entity': {
                 text
@@ -62,11 +67,14 @@ export function addTodo(text) {
     }
 }
 
-export function toggleTodo(id) {
+export function toggleTodo(token, id) {
     return (dispatch) => {
         return client({
             'path': API_URI + '/' + id + '/toggle',
-            'method': 'POST'
+            'method': 'POST',
+            'headers': {
+                'Authorization': token
+            }
         }).then(() => {
             dispatch(toggledTodo(id));
         }, handleError);
@@ -88,7 +96,7 @@ export function login(username, password) {
         }).then((response) => {
             if (response.status.code == 200) {
                 dispatch(loggedIn(response.entity.token));
-                dispatch(fetchTodos());
+                dispatch(fetchTodos(response.entity.token));
             } else {
                 //TODO: Show an error message
             }
