@@ -1,10 +1,13 @@
-import React from 'react'
-import LoginForm from '../containers/LoginForm'
+import React, {PropTypes} from 'react'
 
-const App = () => (
+const App = ({children}) => (
     <div className="flex_parent">
-        <LoginForm/>
+        {children}
     </div>
 );
+
+App.propTypes = {
+    children: PropTypes.object.isRequired
+};
 
 export default App

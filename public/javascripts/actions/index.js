@@ -1,6 +1,7 @@
 import rest from 'rest';
 import mime from 'rest/interceptor/mime';
 import config from 'json!../../config/env.json';
+import {push} from 'redux-router';
 
 const client = rest.wrap(mime);
 const API_URI = config.API_URI;
@@ -95,8 +96,11 @@ export function login(username, password) {
             }
         }).then((response) => {
             if (response.status.code == 200) {
-                dispatch(loggedIn(response.entity.token));
-                dispatch(fetchTodos(response.entity.token));
+                const token = response.entity.token;
+
+                dispatch(loggedIn(token));
+                dispatch(fetchTodos(token));
+                dispatch(push("/home"));
             } else {
                 //TODO: Show an error message
             }
