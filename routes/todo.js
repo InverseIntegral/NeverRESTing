@@ -16,11 +16,11 @@ const NoContentResponseHandler = require('../app/handlers/NoContentResponseHandl
  * @param response      The express js response object.
  * @param handlerClass  The class that knows how to handle the supplied promise.
  */
-const handlePromise = (promise, response, handlerClass) => {
+const handlePromise = (promise, response, handlerClass, dataProperty) => {
     const handler = new handlerClass(response);
 
     promise
-        .then(data => handler.handleSuccess(data))
+        .then(data => handler.handleSuccess(data[dataProperty]))
         .catch(error => handler.handleFailure(error));
 };
 
@@ -55,7 +55,7 @@ router.post('/', (req, res) => {
     }
 
     const promise = User.findOneAndUpdate({
-        id: req.user
+        _id: req.user.id
     }, {
         $push: {
             todos: {
@@ -66,22 +66,22 @@ router.post('/', (req, res) => {
         new: true
     }).exec();
 
-    handlePromise(promise, res, DefaultResponseHandler);
+    handlePromise(promise, res, DefaultResponseHandler, 'todos');
 });
 
 /* GETs all the todos */
 router.get('/', (req, res) => {
-    User.findOne({'id': req.user}).exec()
+    User.findOne({'_id': req.user.id}).exec()
         .then(data => {
             const handler = new DefaultResponseHandler(res);
-            handler.handleSuccess(data);
+            handler.handleSuccess(data.todos);
         });
 });
 
 /* Toggles a todo */
 router.post('/:id/toggle', (req, res) => {
     User.findOne({
-        id: req.user,
+        _id: req.user.id,
     }, {
         todos: {
             $elemMatch: {
@@ -92,7 +92,7 @@ router.post('/:id/toggle', (req, res) => {
         let toggledState = !data.todos[0].active;
 
         const promise = User.findOneAndUpdate({
-            id: req.user,
+            _id: req.user.id,
             'todos._id': req.params.id
         }, {
             $set: {
@@ -102,7 +102,7 @@ router.post('/:id/toggle', (req, res) => {
             new: true
         }).exec();
 
-        handlePromise(promise, res, DefaultResponseHandler);
+        handlePromise(promise, res, DefaultResponseHandler, 'todos');
     });
 
 });

@@ -3,8 +3,6 @@ import TodoList from '../components/TodoList'
 import {toggleTodo} from '../actions';
 
 const mapStateToProps = (state) => {
-
-
     return {
         todos: state.todos.sort((a, b) => {
 
@@ -17,7 +15,8 @@ const mapStateToProps = (state) => {
             }
 
             return 0;
-        })
+        }),
+        token: state.token
     };
 };
 

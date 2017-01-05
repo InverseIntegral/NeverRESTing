@@ -1,24 +1,32 @@
 import React from 'react'
 import {render} from 'react-dom'
 import {Provider} from 'react-redux'
+import {Router, browserHistory} from 'react-router';
 
-import thunkMiddleware from 'redux-thunk'
 import {createStore, applyMiddleware} from 'redux'
+import thunkMiddleware from 'redux-thunk'
 
 import rootReducer from './reducers'
-import {fetchTodos} from './actions';
-import App from './components/App'
+import routes from './routes';
+import {loggedIn, fetchTodos} from './actions';
 
 let store = createStore(
     rootReducer,
     applyMiddleware(thunkMiddleware)
 );
 
-store.dispatch(fetchTodos());
-
 render(
     <Provider store={store}>
-        <App/>
+        <Router history={browserHistory}>
+            {routes}
+        </Router>
     </Provider>,
     document.getElementById('root')
 );
+
+let token = localStorage.getItem('token');
+if (token !== null) {
+    store.dispatch(loggedIn());
+    store.dispatch(fetchTodos());
+    browserHistory.push('/home');
+}

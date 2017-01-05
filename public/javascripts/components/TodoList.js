@@ -4,22 +4,20 @@ import {If, Then} from 'react-if';
 
 const TodoList = ({todos, onTodoClick}) => {
     return (
-        <div>
-            <If condition={todos.length !== 0}>
-                <Then>
-                    <ul className="collection">
-                        {todos.map(todo =>
-                            <Todo key={todo._id}
-                                  {...todo}
-                                  onClick={() => {
-                                      onTodoClick(todo._id);
-                                  }}
-                            />
-                        )}
-                    </ul>
-                </Then>
-            </If>
-        </div>
+        <If condition={todos.length !== 0}>
+            <Then>
+                <ul className="collection">
+                    {todos.map(todo =>
+                        <Todo key={todo._id}
+                              {...todo}
+                              onClick={() => {
+                                  onTodoClick(todo._id);
+                              }}
+                        />
+                    )}
+                </ul>
+            </Then>
+        </If>
     );
 };
 

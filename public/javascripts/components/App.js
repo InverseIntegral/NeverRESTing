@@ -1,17 +1,13 @@
-import React from 'react'
-import AddTodo from '../containers/AddTodo'
-import ConnectedTodoList from '../containers/ConnectedTodoList'
-import ConnectedSpinner from '../containers/ConnectedSpinner'
+import React, {PropTypes} from 'react'
 
-const App = () => (
-    <div>
-        <div>
-            <h1>NeverRESTing</h1>
-        </div>
-        <AddTodo/>
-        <ConnectedSpinner/>
-        <ConnectedTodoList/>
+const App = ({children}) => (
+    <div className="flex_parent">
+        {children}
     </div>
 );
+
+App.propTypes = {
+    children: PropTypes.object.isRequired
+};
 
 export default App
