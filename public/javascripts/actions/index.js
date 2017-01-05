@@ -1,7 +1,7 @@
 import rest from 'rest';
 import mime from 'rest/interceptor/mime';
 import config from 'json!../../config/env.json';
-import {push} from 'redux-router';
+import {browserHistory } from 'react-router'
 
 const client = rest.wrap(mime);
 const API_URI = config.API_URI;
@@ -28,53 +28,52 @@ export const receiveTodos = (json) => {
     };
 };
 
-const loggedIn = (token) => {
+export const loggedIn = () => {
     return {
-        type: 'LOGGED_IN',
-        token
+        type: 'LOGGED_IN'
     };
 };
 
 /** Thunk Actions **/
-export function fetchTodos(token) {
+export function fetchTodos() {
     return (dispatch) => {
         dispatch(requestTodos());
 
         return client({
             'path': API_URI,
             'headers': {
-                'Authorization': token
+                'Authorization': `${localStorage.getItem('token')}`
             }
         }).then(response => {
-            dispatch(receiveTodos(response.entity.todos));
+            dispatch(receiveTodos(response.entity));
         }, handleError);
     };
 }
 
-export function addTodo(token, text) {
+export function addTodo(text) {
     return (dispatch) => {
         return client({
             'path': API_URI,
             'headers': {
                 'Content-Type': 'application/json',
-                'Authorization': token
+                'Authorization': `${localStorage.getItem('token')}`
             },
             'entity': {
                 text
             }
         }).then(response => {
-            dispatch(receiveTodos(response.entity.todos));
+            dispatch(receiveTodos(response.entity));
         }, handleError);
     }
 }
 
-export function toggleTodo(token, id) {
+export function toggleTodo(id) {
     return (dispatch) => {
         return client({
             'path': API_URI + '/' + id + '/toggle',
             'method': 'POST',
             'headers': {
-                'Authorization': token
+                'Authorization': `${localStorage.getItem('token')}`
             }
         }).then(() => {
             dispatch(toggledTodo(id));
@@ -97,10 +96,12 @@ export function login(username, password) {
         }).then((response) => {
             if (response.status.code == 200) {
                 const token = response.entity.token;
+                localStorage.setItem('token', token);
 
-                dispatch(loggedIn(token));
+                dispatch(loggedIn());
                 dispatch(fetchTodos(token));
-                dispatch(push("/home"));
+
+                browserHistory.push('/home');
             } else {
                 //TODO: Show an error message
             }

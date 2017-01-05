@@ -1,6 +1,5 @@
 const state = (state = {
     isAuthenticated: false,
-    token: null,
     isFetching: false,
     todos: []
 }, action) => {
@@ -25,8 +24,7 @@ const state = (state = {
             });
         case 'LOGGED_IN':
             return Object.assign({}, state, {
-                isAuthenticated: true,
-                token: action.token
+                isAuthenticated: true
             });
         default:
             return state;

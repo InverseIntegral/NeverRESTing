@@ -4,11 +4,14 @@ import ConnectedSpinner from '../containers/ConnectedSpinner'
 import ConnectedTodoList from '../containers/ConnectedTodoList'
 import AddTodo from '../containers/AddTodo'
 
+export default () => {
 
-export default () => (
-    <div>
-        <ConnectedSpinner/>
-        <ConnectedTodoList/>
-        <AddTodo/>
-    </div>
-);
+    return (
+        <div className="flex_item">
+            <h1>ToDos</h1>
+            <ConnectedSpinner/>
+            <ConnectedTodoList/>
+            <AddTodo/>
+        </div>
+    );
+};
