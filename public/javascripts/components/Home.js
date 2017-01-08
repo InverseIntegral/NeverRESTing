@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 
-import ConnectedSpinner from '../containers/ConnectedSpinner'
-import ConnectedTodoList from '../containers/ConnectedTodoList'
-import AddTodo from '../containers/AddTodo'
+import ConnectedSpinner from '../containers/ConnectedSpinner';
+import ConnectedTodoList from '../containers/ConnectedTodoList';
+import AddTodo from '../containers/AddTodo';
 
 export default () => {
 

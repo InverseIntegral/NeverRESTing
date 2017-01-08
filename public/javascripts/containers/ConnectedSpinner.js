@@ -1,6 +1,6 @@
-import React, {PropTypes} from 'react'
-import {connect} from 'react-redux'
-import Spinner from '../components/Spinner'
+import React, {PropTypes} from 'react';
+import {connect} from 'react-redux';
+import Spinner from '../components/Spinner';
 
 const mapStateToProps = (state) => {
     return {

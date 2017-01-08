@@ -1,6 +1,6 @@
-import React from 'react'
-import {connect} from 'react-redux'
-import {addTodo} from '../actions'
+import React from 'react';
+import {connect} from 'react-redux';
+import {addTodo} from '../actions';
 
 const mapStateToProps = (state) => {
     return {
@@ -40,4 +40,4 @@ let AddTodo = ({isFetching, dispatch}) => {
 
 AddTodo = connect(mapStateToProps)(AddTodo);
 
-export default AddTodo
+export default AddTodo;

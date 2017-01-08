@@ -1,4 +1,4 @@
-import React, {PropTypes} from 'react'
+import React, {PropTypes} from 'react';
 import {If, Then} from 'react-if';
 
 const Spinner = ({isFetching}) => {
