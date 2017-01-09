@@ -1,10 +1,14 @@
 import rest from 'rest';
 import mime from 'rest/interceptor/mime';
+import errorCode from 'rest/interceptor/errorCode';
+
 import config from 'json!../../config/env.json';
 import {browserHistory} from 'react-router';
 import {TOGGLED_TODO, REQUEST_TODOS, RECEIVE_TODOS, LOGGED_IN} from '../constants';
 
-const client = rest.wrap(mime);
+const client = rest.wrap(mime)
+    .wrap(errorCode);
+
 const API_URI = config.API_URI;
 const AUTH_URI = config.AUTH_URI;
 
@@ -46,11 +50,7 @@ export function fetchTodos() {
                 'Authorization': `${localStorage.getItem('token')}`
             }
         }).then(response => {
-            if (response.status.code == 200) {
-                dispatch(receiveTodos(response.entity));
-            } else if (response.status.code == 401) {
-                handleUnauthorized();
-            }
+            dispatch(receiveTodos(response.entity));
         }, handleError);
     };
 }
@@ -67,11 +67,7 @@ export function addTodo(text) {
                 text
             }
         }).then(response => {
-            if (response.status.code == 200) {
-                dispatch(receiveTodos(response.entity));
-            } else if (response.status.code == 401) {
-                handleUnauthorized();
-            }
+            dispatch(receiveTodos(response.entity));
         }, handleError);
     }
 }
@@ -84,12 +80,8 @@ export function toggleTodo(id) {
             'headers': {
                 'Authorization': `${localStorage.getItem('token')}`
             }
-        }).then(response => {
-            if (response.status.code == 200) {
-                dispatch(toggledTodo(id));
-            } else if (response.status.code == 401) {
-                handleUnauthorized();
-            }
+        }).then(() => {
+            dispatch(toggledTodo(id));
         }, handleError);
     }
 }
@@ -107,27 +99,27 @@ export function login(username, password) {
                 password
             }
         }).then(response => {
-            if (response.status.code == 200) {
-                const token = response.entity.token;
-                localStorage.setItem('token', token);
+            const token = response.entity.token;
+            localStorage.setItem('token', token);
 
-                dispatch(loggedIn());
-                dispatch(fetchTodos(token));
+            dispatch(loggedIn());
+            dispatch(fetchTodos(token));
 
-                browserHistory.push('/home');
-            } else {
-                //TODO: Show an error message
-            }
+            browserHistory.push('/home');
         }, handleError);
     };
 }
 
 const handleUnauthorized = () => {
     localStorage.removeItem('token');
+    //TODO: Only redirect if not already on login page
     browserHistory.push('/login');
 };
 
-
-const handleError = () => {
-    Materialize.toast("Couldn\'t reach the other end", 6000);
+const handleError = (response) => {
+    if (response.status.code == 401) {
+        handleUnauthorized();
+    } else {
+        Materialize.toast("Couldn\'t reach the other end", 6000);
+    }
 };
