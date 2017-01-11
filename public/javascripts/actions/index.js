@@ -112,7 +112,6 @@ export function login(username, password) {
 
 const handleUnauthorized = () => {
     localStorage.removeItem('token');
-    //TODO: Only redirect if not already on login page
     browserHistory.push('/login');
 };
 

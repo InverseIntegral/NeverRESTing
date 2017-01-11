@@ -10,8 +10,13 @@ const authenticationRoute = require('./routes/authentication');
 
 expressApp.use(passport.initialize());
 
-expressApp.use('/', authenticationRoute, express.static(path.join(__dirname, './public')));
+expressApp.use('/', authenticationRoute);
 expressApp.use('/todos', passport.authenticate(), todoRoute);
+
+expressApp.use('/build', express.static(path.join(__dirname, './public/build')));
+expressApp.use('/stylesheets', express.static(path.join(__dirname, './public/stylesheets')));
+expressApp.get('/*', (req,res) => res.sendfile(path.join(__dirname, './public/index.html')));
+
 /**
  * Starts the express server and listens on the given port.
  */
